@@ -1,0 +1,27 @@
+{
+  "name": "class-c",
+  "version": "0.0.0",
+  "description": "className helper",
+  "author": "Patrick Wang <patrick.bohan.wang@gmail.com>",
+  "homepage": "https://github.com/kcirtaptrick/js-packages/tree/master/packages/c-class#readme",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "license": "MIT",
+  "type": "module",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/kcirtaptrick/js-packages.git"
+  },
+  "bugs": {
+    "url": "https://github.com/kcirtaptrick/js-packages/issues"
+  },
+  "scripts": {
+    "clean": "rimraf dist && rimraf tsconfig.tsbuildinfo",
+    "prepack": "yarn build",
+    "build": "yarn clean && yarn compile",
+    "compile": "tsc --build && cp \"./package.json\" ./dist/",
+    "test": "uvu -r tsm src .*\\.test\\.ts",
+    "lint": "eslint \"./src/**/*.tsx?\" --max-warnings=0"
+  },
+  "gitHead": "9cb8a448a9a7bf44e224a86c7fb6a370b87e46dc"
+}

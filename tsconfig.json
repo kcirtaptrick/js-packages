@@ -5,7 +5,7 @@
   "files": [],
   "references": [
     {
-      "path": "packages/c-class"
+      "path": "packages/class-c"
     }
   ]
 }

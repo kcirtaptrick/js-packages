@@ -116,7 +116,12 @@ test("Styles object: Trimming", () => {
   );
 
   matches(
-    c(styles)`a `.c(styles)` b`.c(styles)` c `.c(styles)`  d    e   `.c(styles)`
+    // prettier-ignore
+    c(styles)`a `
+    .c(styles)` b`
+    .c(styles)` c `
+    .c(styles)`  d    e   `
+    .c(styles)`
       f
       g
     `,

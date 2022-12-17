@@ -102,6 +102,28 @@ test("Styles object (css module)", () => {
   matches(c(styles)`a nonexistant b`, "styles.a styles.b");
 });
 
+test("Styles object: Trimming", () => {
+  matches(c(styles)`a `, "styles.a");
+  matches(c(styles)` a`, "styles.a");
+  matches(c(styles)` a `, "styles.a");
+  matches(c(styles)` a   b `, "styles.a styles.b");
+  matches(
+    c(styles)`
+      a
+      b
+    `,
+    "styles.a styles.b"
+  );
+
+  matches(
+    c(styles)`a `.c(styles)` b`.c(styles)` c `.c(styles)`  d    e   `.c(styles)`
+      f
+      g
+    `,
+    "styles.a styles.b styles.c styles.d styles.e styles.f styles.g"
+  );
+});
+
 test("Styles object: Chaining", () => {
   matches(c(styles)`a`.c`b`, "styles.a b");
   matches(c(styles)`a`.c(styles)`b`, "styles.a styles.b");

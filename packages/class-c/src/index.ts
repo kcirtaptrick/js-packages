@@ -33,6 +33,7 @@ const c = ((stringOrTemplateStringsOrClassMap, ...values) => {
     str
       .split(" ")
       .map((cls) => stringOrTemplateStringsOrClassMap[cls])
+      .filter(Boolean)
       .join(" ")
   );
 }) as C;
@@ -55,38 +56,39 @@ const classNameFromTemplate =
   (transform = (str: string) => str) =>
   (strings: TemplateStringsArray, ...values: any[]) => {
     const classNames = transform(
-      strings.reduce(
-        (acc, curr, i) =>
-          `${acc}${curr}${(function getString(value): any {
-            if (!value) return "";
+      strings
+        .reduce(
+          (acc, curr, i) =>
+            `${acc}${curr}${(function getString(value): any {
+              if (!value) return "";
 
-            if (value instanceof Array)
-              return value
-                .map((item) => getString(item))
-                .filter((item) => typeof item === "string")
-                .join(" ");
+              if (value instanceof Array)
+                return value
+                  .map((item) => getString(item))
+                  .filter((item) => typeof item === "string")
+                  .join(" ");
 
-            if (
-              typeof value === "string" ||
-              typeof value === "number" ||
-              value instanceof String
-            )
-              return value;
+              if (
+                typeof value === "string" ||
+                typeof value === "number" ||
+                value instanceof String
+              )
+                return value;
 
-            if (typeof value === "object")
-              return Object.entries(value)
-                .flatMap(([className, condition]) =>
-                  condition ? className : []
-                )
-                .join(" ");
+              if (typeof value === "object")
+                return Object.entries(value)
+                  .flatMap(([className, condition]) =>
+                    condition ? className : []
+                  )
+                  .join(" ");
 
-            return "";
-          })(values[i])}`,
-        ""
-      )
-    )
-      .replaceAll(/\s+/g, " ")
-      .trim();
+              return "";
+            })(values[i])}`,
+          ""
+        )
+        .replaceAll(/\s+/g, " ")
+        .trim()
+    );
 
     return extend(classNames);
   };

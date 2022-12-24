@@ -27,9 +27,9 @@ map.get(Tuple(1, 2, 3)); // "value 1"
 map.get(Record({ a: "a" })); // "value 2"
 
 // Types
-const tuple: Tuple<number, number> = Tuple(1, 2);
-const tuple: Tuple<number, number> = [1, 2]; // TypeError
-const tuple: Tuple<number, number> = Tuple(1, 2, 3); // TypeError
+const tuple: Tuple<[number, number]> = Tuple(1, 2);
+const tuple: Tuple<[number, number]> = [1, 2]; // TypeError
+const tuple: Tuple<[number, number]> = Tuple(1, 2, 3); // TypeError
 
 const record: Record<{ a: string }> = Record({ a: "a" });
 const record: Record<{ a: string }> = { a: "a" }; // TypeError

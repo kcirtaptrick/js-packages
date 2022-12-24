@@ -1,6 +1,6 @@
 # Record & Tuple
 
-Lightweight, typed implementation of the [Records and Tuples proposal](https://github.com/tc39/proposal-record-tuple), only supports standard library. See [`@bloomberg/record-tuple-polyfill`](https://www.npmjs.com/package/@bloomberg/record-tuple-polyfill) for experimental syntax support with a babel transform.
+[Lightweight](https://bundlephobia.com/package/record-tuple), typed implementation of the [Records and Tuples proposal](https://github.com/tc39/proposal-record-tuple), only supports standard library. See [`@bloomberg/record-tuple-polyfill`](https://www.npmjs.com/package/@bloomberg/record-tuple-polyfill) for experimental syntax support with a babel transform.
 
 ## Installation
 

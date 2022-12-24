@@ -1,4 +1,4 @@
-import Tuple from "./Tuple";
+import Tuple from "./Tuple.js";
 
 type AnyRecord = {
   [key: keyof any]: any;

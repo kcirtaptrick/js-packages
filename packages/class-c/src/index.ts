@@ -86,7 +86,7 @@ const classNameFromTemplate =
             })(values[i])}`,
           ""
         )
-        .replaceAll(/\s+/g, " ")
+        .replace(/\s+/g, " ")
         .trim()
     );
 

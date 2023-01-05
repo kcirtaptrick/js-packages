@@ -1,6 +1,6 @@
 {
   "name": "configurable-eventemitter",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "description": "A modern event emitter",
   "author": "Patrick Wang <patrick.bohan.wang@gmail.com>",
   "homepage": "https://github.com/kcirtaptrick/js-packages/tree/master/packages/eventemitter#readme",
@@ -27,7 +27,6 @@
     "test": "uvu -r tsm src .*\\.test\\.ts",
     "lint": "eslint \"./src/**/*.tsx?\" --max-warnings=0"
   },
-  "devDependencies": {},
   "exports": {
     "./full": "./dist/full.js",
     "./minimal": "./dist/minimal.js",

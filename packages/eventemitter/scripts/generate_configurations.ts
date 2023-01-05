@@ -55,7 +55,22 @@ await Promise.all([
 
 await fs.writeFile(
   new URL("../package.json", rootPath),
-  JSON.stringify({ ...pkg, exports }, null, 2)
+  JSON.stringify(
+    {
+      ...pkg,
+      exports: Object.fromEntries(
+        Object.entries(exports).map(([path, file]) => [
+          path,
+          {
+            import: file,
+            types: `${file.slice(0, file.lastIndexOf("."))}.d.ts`,
+          },
+        ])
+      ),
+    },
+    null,
+    2
+  )
 );
 
 function withFlags(flags: string[]) {

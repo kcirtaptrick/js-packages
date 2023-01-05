@@ -8,6 +8,9 @@
       "path": "packages/class-c"
     },
     {
+      "path": "packages/eventemitter"
+    },
+    {
       "path": "packages/record-tuple"
     }
   ]

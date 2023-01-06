@@ -1,4 +1,4 @@
-/* asyncIterator copyWith emit.cacheFor emit.if emit.ifListening emit.withContext on.all */
+/* asyncIterator copyWith destroy emit.cacheFor emit.if emit.ifListening emit.withContext many on.all once */
 
 type EventDetails = [name: any, data?: any, returnValue?: any];
 
@@ -27,7 +27,9 @@ type HandlerFromData<
   /* /emit.withContext */
 ) => Details[2] extends undefined ? void : Details[2];
 
+/* +destroy */
 const DESTROY_ALL = Symbol("EventEmitter.DESTROY_ALL");
+/* /destroy */
 /* +on.all */
 const LISTEN_ALL = Symbol("EventEmitter.LISTEN_ALL");
 /* /on.all */
@@ -59,8 +61,9 @@ export default class EventEmitterConfiguration<
   /* /emit.cacheFor */
 
   constructor() {
-    this.off = this.off.bind(this);
+    /* +destroy */
     this.destroy = this.destroy.bind(this);
+    /* /destroy */
     /* +copyWith */
     this.copyWith = this.copyWith.bind(this);
     /* /copyWith */
@@ -133,6 +136,81 @@ export default class EventEmitterConfiguration<
     });
   }
 
+  /* +once */
+  get once() {
+    const once = <
+      E extends T[number][0],
+      Details extends FilterDetailsFromName<T, E>[number]
+    >(
+      name: E,
+      handler: HandlerFromData<
+        Details /* +emit.withContext */,
+        Context /* /emit.withContext */
+      >
+    ) => {
+      const { off, and } = this.on(name, (...args) => {
+        off();
+
+        return handler(...args);
+      });
+
+      return { off, and };
+    };
+
+    return Object.assign(once, {
+      /* +on.all */
+      all: (handler: Parameters<this["on"]["all"]>[0]) => {
+        const { off, and } = this.on.all((...args) => {
+          off();
+
+          return handler(...args);
+        });
+
+        return { off, and };
+      },
+      /* /on.all */
+    });
+  }
+  /* /once */
+
+  /* +many */
+  get many() {
+    const many = <
+      E extends T[number][0],
+      Details extends FilterDetailsFromName<T, E>[number]
+    >(
+      count: number,
+      name: E,
+      handler: HandlerFromData<
+        Details /* +emit.withContext */,
+        Context /* /emit.withContext */
+      >
+    ) => {
+      const { off, and } = this.on(name, (...args) => {
+        if (count-- === 0) off();
+
+        return handler(...args);
+      });
+
+      return { off, and };
+    };
+
+    return Object.assign(many, {
+      /* +on.all */
+      all: (count: number, handler: Parameters<this["on"]["all"]>[0]) => {
+        const { off, and } = this.on.all((...args) => {
+          if (count-- === 0) off();
+
+          return handler(...args);
+        });
+
+        return { off, and };
+      },
+      /* /on.all */
+    });
+  }
+  /* /many */
+
   /* +asyncIterator */
   async *asyncIteratorFor<E extends T[number][0]>(
     name: E
@@ -161,17 +239,39 @@ export default class EventEmitterConfiguration<
   }
   /* /asyncIterator */
 
-  off<
-    E extends T[number][0],
-    Details extends FilterDetailsFromName<T, E>[number]
-  >(name: E, handler: HandlerFromData<Details>) {
-    this.listeners.get(name)?.delete(handler);
+  get off() {
+    const off = <
+      E extends T[number][0],
+      Details extends FilterDetailsFromName<T, E>[number]
+    >(
+      name: E,
+      handler: HandlerFromData<Details>
+    ) => {
+      const removed = !!this.listeners.get(name)?.delete(handler);
+
+      return {
+        and: this as EventEmitterConfiguration<
+          T /* +emit.withContext */,
+          Context /* /emit.withContext */
+        >,
+        removed,
+      };
+    };
+
+    return Object.assign(off, {
+      /* +on.all */
+      all: (handler: Parameters<this["on"]["all"]>[0]) =>
+        off(LISTEN_ALL, handler as any),
+      /* /on.all */
+    });
   }
 
+  /* +destroy */
   destroy(name: T[number][0] = DESTROY_ALL) {
     if (name === DESTROY_ALL) this.listeners.clear();
     else this.listeners.delete(name);
   }
+  /* /destroy */
 
   get emit() {
     /* +emit.withContext */

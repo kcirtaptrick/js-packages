@@ -41,20 +41,23 @@ export default class EventEmitterConfiguration<T extends EventDetails[] = any> {
       Details extends FilterDetailsFromName<T, E>[number]
     >(
       name: E,
+
       handler: HandlerFromData<Details>
     ) => {
       if (!this.listeners.has(name)) this.listeners.set(name, new Set());
 
-      this.listeners.get(name)!.add(handler);
+      if (handler) {
+        this.listeners.get(name)!.add(handler);
 
-      if (this.cache.has(name)) {
-        for (const [_name, data] of this.cache.get(name)!)
-          (handler as any)(data);
+        if (this.cache.has(name)) {
+          for (const [_name, data] of this.cache.get(name)!)
+            (handler as any)(data);
+        }
       }
 
       return {
         and: this as EventEmitterConfiguration<T>,
-        off: () => this.off(name, handler),
+        off: () => this.off(name, handler!),
       };
     };
 

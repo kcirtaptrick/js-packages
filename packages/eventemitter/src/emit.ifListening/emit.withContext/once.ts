@@ -38,15 +38,18 @@ export default class EventEmitterConfiguration<
       Details extends FilterDetailsFromName<T, E>[number]
     >(
       name: E,
+
       handler: HandlerFromData<Details, Context>
     ) => {
       if (!this.listeners.has(name)) this.listeners.set(name, new Set());
 
-      this.listeners.get(name)!.add(handler);
+      if (handler) {
+        this.listeners.get(name)!.add(handler);
+      }
 
       return {
         and: this as EventEmitterConfiguration<T, Context>,
-        off: () => this.off(name, handler),
+        off: () => this.off(name, handler!),
       };
     };
 

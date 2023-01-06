@@ -39,8 +39,6 @@ export default class EventEmitterConfiguration<
 
   constructor() {
     this.copyWith = this.copyWith.bind(this);
-
-    this.asyncIteratorFor = this.asyncIteratorFor.bind(this);
   }
 
   get on() {
@@ -49,26 +47,42 @@ export default class EventEmitterConfiguration<
       Details extends FilterDetailsFromName<T, E>[number]
     >(
       name: E,
-      handler: HandlerFromData<Details, Context>
+
+      handler?: HandlerFromData<Details, Context>
     ) => {
       if (!this.listeners.has(name)) this.listeners.set(name, new Set());
 
-      this.listeners.get(name)!.add(handler);
+      if (handler) {
+        this.listeners.get(name)!.add(handler);
 
-      if (this.cache.has(name)) {
-        for (const [_name, data, context] of this.cache.get(name)!)
-          (handler as any)(
-            data,
+        if (this.cache.has(name)) {
+          for (const [_name, data, context] of this.cache.get(name)!)
+            (handler as any)(
+              data,
 
-            context
-          );
+              context
+            );
+        }
       }
 
       return {
         and: this as EventEmitterConfiguration<T, Context>,
-        off: () => this.off(name, handler),
+        off: () => this.off(name, handler!),
+
+        async *[Symbol.asyncIterator](): AsyncIterableIterator<Details[1]> {
+          while (true) {
+            yield await new Promise((resolve) => {
+              const { off } = on(name, (data) => {
+                resolve(data);
+                off();
+              });
+            });
+          }
+        },
       };
     };
+
+    const self = this;
 
     return Object.assign(on, {});
   }
@@ -112,32 +126,6 @@ export default class EventEmitterConfiguration<
     };
 
     return Object.assign(many, {});
-  }
-
-  async *asyncIteratorFor<E extends T[number][0]>(
-    name: E
-  ): AsyncIterableIterator<FilterDetailsFromName<T, E>[number]> {
-    while (true) {
-      yield await new Promise((resolve) => {
-        const { off } = this.on(name, (data) => {
-          resolve(data);
-          off();
-        });
-      });
-    }
-  }
-
-  async *[Symbol.asyncIterator](): AsyncIterableIterator<
-    [name: T[number][0], data: T[number][1]]
-  > {
-    while (true) {
-      yield await new Promise((resolve) => {
-        const { off } = this.on(name, (data) => {
-          resolve(data);
-          off();
-        });
-      });
-    }
   }
 
   get off() {

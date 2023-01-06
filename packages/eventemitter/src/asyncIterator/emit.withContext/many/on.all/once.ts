@@ -35,9 +35,7 @@ export default class EventEmitterConfiguration<
     Set<(...args: any) => any>
   >();
 
-  constructor() {
-    this.asyncIteratorFor = this.asyncIteratorFor.bind(this);
-  }
+  constructor() {}
 
   get on() {
     const on = <
@@ -45,29 +43,60 @@ export default class EventEmitterConfiguration<
       Details extends FilterDetailsFromName<T, E>[number]
     >(
       name: E,
-      handler: HandlerFromData<Details, Context>
+
+      handler?: HandlerFromData<Details, Context>
     ) => {
       if (!this.listeners.has(name)) this.listeners.set(name, new Set());
 
-      this.listeners.get(name)!.add(handler);
+      if (handler) {
+        this.listeners.get(name)!.add(handler);
+      }
 
       return {
         and: this as EventEmitterConfiguration<T, Context>,
-        off: () => this.off(name, handler),
+        off: () => this.off(name, handler!),
+
+        async *[Symbol.asyncIterator](): AsyncIterableIterator<Details[1]> {
+          while (true) {
+            yield await new Promise((resolve) => {
+              const { off } = on(name, (data) => {
+                resolve(data);
+                off();
+              });
+            });
+          }
+        },
       };
     };
+
+    const self = this;
 
     return Object.assign(on, {
       // Cannot return this type: The inferred type of 'on' references an
       // inaccessible 'this' type. A type annotation is necessary.
       all: (
-        handler: (
+        handler?: (
           name: T[number][0],
           data: T[number][1],
 
           context: Context
         ) => void | typeof EventEmitterConfiguration.Track
-      ) => on(LISTEN_ALL, handler as any),
+      ) => ({
+        ...on(LISTEN_ALL, handler as any),
+
+        async *[Symbol.asyncIterator](): AsyncIterableIterator<
+          [name: T[number][0], data: T[number][1]]
+        > {
+          while (true) {
+            yield await new Promise((resolve) => {
+              const { off } = self.on.all((name, data) => {
+                resolve([name, data]);
+                off();
+              });
+            });
+          }
+        },
+      }),
     });
   }
 
@@ -93,7 +122,7 @@ export default class EventEmitterConfiguration<
         const { off, and } = this.on.all((...args) => {
           off();
 
-          return handler(...args);
+          return handler?.(...args);
         });
 
         return { off, and };
@@ -124,7 +153,7 @@ export default class EventEmitterConfiguration<
         const { off, and } = this.on.all((...args) => {
           if (count-- === 0) off();
 
-          return handler(...args);
+          return handler?.(...args);
         });
 
         return { off, and };
@@ -132,30 +161,8 @@ export default class EventEmitterConfiguration<
     });
   }
 
-  async *asyncIteratorFor<E extends T[number][0]>(
-    name: E
-  ): AsyncIterableIterator<FilterDetailsFromName<T, E>[number]> {
-    while (true) {
-      yield await new Promise((resolve) => {
-        const { off } = this.on(name, (data) => {
-          resolve(data);
-          off();
-        });
-      });
-    }
-  }
-
-  async *[Symbol.asyncIterator](): AsyncIterableIterator<
-    [name: T[number][0], data: T[number][1]]
-  > {
-    while (true) {
-      yield await new Promise((resolve) => {
-        const { off } = this.on(name, (data) => {
-          resolve(data);
-          off();
-        });
-      });
-    }
+  [Symbol.asyncIterator]() {
+    return this.on.all()[Symbol.asyncIterator]();
   }
 
   get off() {

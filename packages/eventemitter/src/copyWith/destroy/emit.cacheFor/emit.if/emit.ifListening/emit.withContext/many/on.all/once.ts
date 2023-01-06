@@ -56,32 +56,35 @@ export default class EventEmitterConfiguration<
       Details extends FilterDetailsFromName<T, E>[number]
     >(
       name: E,
+
       handler: HandlerFromData<Details, Context>
     ) => {
       if (!this.listeners.has(name)) this.listeners.set(name, new Set());
 
-      this.listeners.get(name)!.add(handler);
+      if (handler) {
+        this.listeners.get(name)!.add(handler);
 
-      if (this.cache.has(name)) {
-        for (const [_name, data, context] of this.cache.get(name)!)
-          if (name === LISTEN_ALL)
-            (handler as any)(
-              _name,
-              data,
+        if (this.cache.has(name)) {
+          for (const [_name, data, context] of this.cache.get(name)!)
+            if (name === LISTEN_ALL)
+              (handler as any)(
+                _name,
+                data,
 
-              context
-            );
-          else
-            (handler as any)(
-              data,
+                context
+              );
+            else
+              (handler as any)(
+                data,
 
-              context
-            );
+                context
+              );
+        }
       }
 
       return {
         and: this as EventEmitterConfiguration<T, Context>,
-        off: () => this.off(name, handler),
+        off: () => this.off(name, handler!),
       };
     };
 
@@ -95,7 +98,9 @@ export default class EventEmitterConfiguration<
 
           context: Context
         ) => void | typeof EventEmitterConfiguration.Track
-      ) => on(LISTEN_ALL, handler as any),
+      ) => ({
+        ...on(LISTEN_ALL, handler as any),
+      }),
     });
   }
 
@@ -121,7 +126,7 @@ export default class EventEmitterConfiguration<
         const { off, and } = this.on.all((...args) => {
           off();
 
-          return handler(...args);
+          return handler?.(...args);
         });
 
         return { off, and };
@@ -152,7 +157,7 @@ export default class EventEmitterConfiguration<
         const { off, and } = this.on.all((...args) => {
           if (count-- === 0) off();
 
-          return handler(...args);
+          return handler?.(...args);
         });
 
         return { off, and };

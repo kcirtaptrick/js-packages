@@ -42,21 +42,24 @@ export default class EventEmitterConfiguration<T extends EventDetails[] = any> {
       Details extends FilterDetailsFromName<T, E>[number]
     >(
       name: E,
+
       handler: HandlerFromData<Details>
     ) => {
       if (!this.listeners.has(name)) this.listeners.set(name, new Set());
 
-      this.listeners.get(name)!.add(handler);
+      if (handler) {
+        this.listeners.get(name)!.add(handler);
 
-      if (this.cache.has(name)) {
-        for (const [_name, data] of this.cache.get(name)!)
-          if (name === LISTEN_ALL) (handler as any)(_name, data);
-          else (handler as any)(data);
+        if (this.cache.has(name)) {
+          for (const [_name, data] of this.cache.get(name)!)
+            if (name === LISTEN_ALL) (handler as any)(_name, data);
+            else (handler as any)(data);
+        }
       }
 
       return {
         and: this as EventEmitterConfiguration<T>,
-        off: () => this.off(name, handler),
+        off: () => this.off(name, handler!),
       };
     };
 
@@ -68,7 +71,9 @@ export default class EventEmitterConfiguration<T extends EventDetails[] = any> {
           name: T[number][0],
           data: T[number][1]
         ) => void | typeof EventEmitterConfiguration.Track
-      ) => on(LISTEN_ALL, handler as any),
+      ) => ({
+        ...on(LISTEN_ALL, handler as any),
+      }),
     });
   }
 
@@ -94,7 +99,7 @@ export default class EventEmitterConfiguration<T extends EventDetails[] = any> {
         const { off, and } = this.on.all((...args) => {
           off();
 
-          return handler(...args);
+          return handler?.(...args);
         });
 
         return { off, and };
@@ -125,7 +130,7 @@ export default class EventEmitterConfiguration<T extends EventDetails[] = any> {
         const { off, and } = this.on.all((...args) => {
           if (count-- === 0) off();
 
-          return handler(...args);
+          return handler?.(...args);
         });
 
         return { off, and };

@@ -108,7 +108,7 @@ export default class EventEmitterConfiguration<
       /* /emit.cacheFor */
 
       return {
-        self: this as EventEmitterConfiguration<
+        and: this as EventEmitterConfiguration<
           T /* +emit.withContext */,
           Context /* /emit.withContext */
         >,

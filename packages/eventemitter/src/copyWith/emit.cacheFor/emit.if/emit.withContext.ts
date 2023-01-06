@@ -68,7 +68,7 @@ export default class EventEmitterConfiguration<
       }
 
       return {
-        self: this as EventEmitterConfiguration<T, Context>,
+        and: this as EventEmitterConfiguration<T, Context>,
         off: () => this.off(name, handler),
       };
     };

@@ -55,7 +55,7 @@ export default class EventEmitterConfiguration<
       this.listeners.get(name)!.add(handler);
 
       return {
-        self: this as EventEmitterConfiguration<T, Context>,
+        and: this as EventEmitterConfiguration<T, Context>,
         off: () => this.off(name, handler),
       };
     };

@@ -56,7 +56,7 @@ export default class EventEmitterConfiguration<T extends EventDetails[] = any> {
       }
 
       return {
-        self: this as EventEmitterConfiguration<T>,
+        and: this as EventEmitterConfiguration<T>,
         off: () => this.off(name, handler),
       };
     };

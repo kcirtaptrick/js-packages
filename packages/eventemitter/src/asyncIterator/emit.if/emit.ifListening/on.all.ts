@@ -49,7 +49,7 @@ export default class EventEmitterConfiguration<T extends EventDetails[] = any> {
       this.listeners.get(name)!.add(handler);
 
       return {
-        self: this as EventEmitterConfiguration<T>,
+        and: this as EventEmitterConfiguration<T>,
         off: () => this.off(name, handler),
       };
     };

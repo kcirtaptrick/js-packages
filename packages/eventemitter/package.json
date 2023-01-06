@@ -29,520 +29,520 @@
   },
   "exports": {
     "./full": {
-      "import": "./dist/full.js",
-      "types": "./dist/full.d.ts"
+      "types": "./dist/full.d.ts",
+      "import": "./dist/full.js"
     },
     "./minimal": {
-      "import": "./dist/minimal.js",
-      "types": "./dist/minimal.d.ts"
+      "types": "./dist/minimal.d.ts",
+      "import": "./dist/minimal.js"
     },
     "./asyncIterator": {
-      "import": "./dist/asyncIterator.js",
-      "types": "./dist/asyncIterator.d.ts"
+      "types": "./dist/asyncIterator.d.ts",
+      "import": "./dist/asyncIterator.js"
     },
     "./copyWith": {
-      "import": "./dist/copyWith.js",
-      "types": "./dist/copyWith.d.ts"
+      "types": "./dist/copyWith.d.ts",
+      "import": "./dist/copyWith.js"
     },
     "./emit.cacheFor": {
-      "import": "./dist/emit.cacheFor.js",
-      "types": "./dist/emit.cacheFor.d.ts"
+      "types": "./dist/emit.cacheFor.d.ts",
+      "import": "./dist/emit.cacheFor.js"
     },
     "./emit.if": {
-      "import": "./dist/emit.if.js",
-      "types": "./dist/emit.if.d.ts"
+      "types": "./dist/emit.if.d.ts",
+      "import": "./dist/emit.if.js"
     },
     "./emit.ifListening": {
-      "import": "./dist/emit.ifListening.js",
-      "types": "./dist/emit.ifListening.d.ts"
+      "types": "./dist/emit.ifListening.d.ts",
+      "import": "./dist/emit.ifListening.js"
     },
     "./emit.withContext": {
-      "import": "./dist/emit.withContext.js",
-      "types": "./dist/emit.withContext.d.ts"
+      "types": "./dist/emit.withContext.d.ts",
+      "import": "./dist/emit.withContext.js"
     },
     "./on.all": {
-      "import": "./dist/on.all.js",
-      "types": "./dist/on.all.d.ts"
+      "types": "./dist/on.all.d.ts",
+      "import": "./dist/on.all.js"
     },
     "./asyncIterator/copyWith": {
-      "import": "./dist/asyncIterator/copyWith.js",
-      "types": "./dist/asyncIterator/copyWith.d.ts"
+      "types": "./dist/asyncIterator/copyWith.d.ts",
+      "import": "./dist/asyncIterator/copyWith.js"
     },
     "./asyncIterator/emit.cacheFor": {
-      "import": "./dist/asyncIterator/emit.cacheFor.js",
-      "types": "./dist/asyncIterator/emit.cacheFor.d.ts"
+      "types": "./dist/asyncIterator/emit.cacheFor.d.ts",
+      "import": "./dist/asyncIterator/emit.cacheFor.js"
     },
     "./asyncIterator/emit.if": {
-      "import": "./dist/asyncIterator/emit.if.js",
-      "types": "./dist/asyncIterator/emit.if.d.ts"
+      "types": "./dist/asyncIterator/emit.if.d.ts",
+      "import": "./dist/asyncIterator/emit.if.js"
     },
     "./asyncIterator/emit.ifListening": {
-      "import": "./dist/asyncIterator/emit.ifListening.js",
-      "types": "./dist/asyncIterator/emit.ifListening.d.ts"
+      "types": "./dist/asyncIterator/emit.ifListening.d.ts",
+      "import": "./dist/asyncIterator/emit.ifListening.js"
     },
     "./asyncIterator/emit.withContext": {
-      "import": "./dist/asyncIterator/emit.withContext.js",
-      "types": "./dist/asyncIterator/emit.withContext.d.ts"
+      "types": "./dist/asyncIterator/emit.withContext.d.ts",
+      "import": "./dist/asyncIterator/emit.withContext.js"
     },
     "./asyncIterator/on.all": {
-      "import": "./dist/asyncIterator/on.all.js",
-      "types": "./dist/asyncIterator/on.all.d.ts"
+      "types": "./dist/asyncIterator/on.all.d.ts",
+      "import": "./dist/asyncIterator/on.all.js"
     },
     "./copyWith/emit.cacheFor": {
-      "import": "./dist/copyWith/emit.cacheFor.js",
-      "types": "./dist/copyWith/emit.cacheFor.d.ts"
+      "types": "./dist/copyWith/emit.cacheFor.d.ts",
+      "import": "./dist/copyWith/emit.cacheFor.js"
     },
     "./copyWith/emit.if": {
-      "import": "./dist/copyWith/emit.if.js",
-      "types": "./dist/copyWith/emit.if.d.ts"
+      "types": "./dist/copyWith/emit.if.d.ts",
+      "import": "./dist/copyWith/emit.if.js"
     },
     "./copyWith/emit.ifListening": {
-      "import": "./dist/copyWith/emit.ifListening.js",
-      "types": "./dist/copyWith/emit.ifListening.d.ts"
+      "types": "./dist/copyWith/emit.ifListening.d.ts",
+      "import": "./dist/copyWith/emit.ifListening.js"
     },
     "./copyWith/emit.withContext": {
-      "import": "./dist/copyWith/emit.withContext.js",
-      "types": "./dist/copyWith/emit.withContext.d.ts"
+      "types": "./dist/copyWith/emit.withContext.d.ts",
+      "import": "./dist/copyWith/emit.withContext.js"
     },
     "./copyWith/on.all": {
-      "import": "./dist/copyWith/on.all.js",
-      "types": "./dist/copyWith/on.all.d.ts"
+      "types": "./dist/copyWith/on.all.d.ts",
+      "import": "./dist/copyWith/on.all.js"
     },
     "./emit.cacheFor/emit.if": {
-      "import": "./dist/emit.cacheFor/emit.if.js",
-      "types": "./dist/emit.cacheFor/emit.if.d.ts"
+      "types": "./dist/emit.cacheFor/emit.if.d.ts",
+      "import": "./dist/emit.cacheFor/emit.if.js"
     },
     "./emit.cacheFor/emit.ifListening": {
-      "import": "./dist/emit.cacheFor/emit.ifListening.js",
-      "types": "./dist/emit.cacheFor/emit.ifListening.d.ts"
+      "types": "./dist/emit.cacheFor/emit.ifListening.d.ts",
+      "import": "./dist/emit.cacheFor/emit.ifListening.js"
     },
     "./emit.cacheFor/emit.withContext": {
-      "import": "./dist/emit.cacheFor/emit.withContext.js",
-      "types": "./dist/emit.cacheFor/emit.withContext.d.ts"
+      "types": "./dist/emit.cacheFor/emit.withContext.d.ts",
+      "import": "./dist/emit.cacheFor/emit.withContext.js"
     },
     "./emit.cacheFor/on.all": {
-      "import": "./dist/emit.cacheFor/on.all.js",
-      "types": "./dist/emit.cacheFor/on.all.d.ts"
+      "types": "./dist/emit.cacheFor/on.all.d.ts",
+      "import": "./dist/emit.cacheFor/on.all.js"
     },
     "./emit.if/emit.ifListening": {
-      "import": "./dist/emit.if/emit.ifListening.js",
-      "types": "./dist/emit.if/emit.ifListening.d.ts"
+      "types": "./dist/emit.if/emit.ifListening.d.ts",
+      "import": "./dist/emit.if/emit.ifListening.js"
     },
     "./emit.if/emit.withContext": {
-      "import": "./dist/emit.if/emit.withContext.js",
-      "types": "./dist/emit.if/emit.withContext.d.ts"
+      "types": "./dist/emit.if/emit.withContext.d.ts",
+      "import": "./dist/emit.if/emit.withContext.js"
     },
     "./emit.if/on.all": {
-      "import": "./dist/emit.if/on.all.js",
-      "types": "./dist/emit.if/on.all.d.ts"
+      "types": "./dist/emit.if/on.all.d.ts",
+      "import": "./dist/emit.if/on.all.js"
     },
     "./emit.ifListening/emit.withContext": {
-      "import": "./dist/emit.ifListening/emit.withContext.js",
-      "types": "./dist/emit.ifListening/emit.withContext.d.ts"
+      "types": "./dist/emit.ifListening/emit.withContext.d.ts",
+      "import": "./dist/emit.ifListening/emit.withContext.js"
     },
     "./emit.ifListening/on.all": {
-      "import": "./dist/emit.ifListening/on.all.js",
-      "types": "./dist/emit.ifListening/on.all.d.ts"
+      "types": "./dist/emit.ifListening/on.all.d.ts",
+      "import": "./dist/emit.ifListening/on.all.js"
     },
     "./emit.withContext/on.all": {
-      "import": "./dist/emit.withContext/on.all.js",
-      "types": "./dist/emit.withContext/on.all.d.ts"
+      "types": "./dist/emit.withContext/on.all.d.ts",
+      "import": "./dist/emit.withContext/on.all.js"
     },
     "./asyncIterator/copyWith/emit.cacheFor": {
-      "import": "./dist/asyncIterator/copyWith/emit.cacheFor.js",
-      "types": "./dist/asyncIterator/copyWith/emit.cacheFor.d.ts"
+      "types": "./dist/asyncIterator/copyWith/emit.cacheFor.d.ts",
+      "import": "./dist/asyncIterator/copyWith/emit.cacheFor.js"
     },
     "./asyncIterator/copyWith/emit.if": {
-      "import": "./dist/asyncIterator/copyWith/emit.if.js",
-      "types": "./dist/asyncIterator/copyWith/emit.if.d.ts"
+      "types": "./dist/asyncIterator/copyWith/emit.if.d.ts",
+      "import": "./dist/asyncIterator/copyWith/emit.if.js"
     },
     "./asyncIterator/copyWith/emit.ifListening": {
-      "import": "./dist/asyncIterator/copyWith/emit.ifListening.js",
-      "types": "./dist/asyncIterator/copyWith/emit.ifListening.d.ts"
+      "types": "./dist/asyncIterator/copyWith/emit.ifListening.d.ts",
+      "import": "./dist/asyncIterator/copyWith/emit.ifListening.js"
     },
     "./asyncIterator/copyWith/emit.withContext": {
-      "import": "./dist/asyncIterator/copyWith/emit.withContext.js",
-      "types": "./dist/asyncIterator/copyWith/emit.withContext.d.ts"
+      "types": "./dist/asyncIterator/copyWith/emit.withContext.d.ts",
+      "import": "./dist/asyncIterator/copyWith/emit.withContext.js"
     },
     "./asyncIterator/copyWith/on.all": {
-      "import": "./dist/asyncIterator/copyWith/on.all.js",
-      "types": "./dist/asyncIterator/copyWith/on.all.d.ts"
+      "types": "./dist/asyncIterator/copyWith/on.all.d.ts",
+      "import": "./dist/asyncIterator/copyWith/on.all.js"
     },
     "./asyncIterator/emit.cacheFor/emit.if": {
-      "import": "./dist/asyncIterator/emit.cacheFor/emit.if.js",
-      "types": "./dist/asyncIterator/emit.cacheFor/emit.if.d.ts"
+      "types": "./dist/asyncIterator/emit.cacheFor/emit.if.d.ts",
+      "import": "./dist/asyncIterator/emit.cacheFor/emit.if.js"
     },
     "./asyncIterator/emit.cacheFor/emit.ifListening": {
-      "import": "./dist/asyncIterator/emit.cacheFor/emit.ifListening.js",
-      "types": "./dist/asyncIterator/emit.cacheFor/emit.ifListening.d.ts"
+      "types": "./dist/asyncIterator/emit.cacheFor/emit.ifListening.d.ts",
+      "import": "./dist/asyncIterator/emit.cacheFor/emit.ifListening.js"
     },
     "./asyncIterator/emit.cacheFor/emit.withContext": {
-      "import": "./dist/asyncIterator/emit.cacheFor/emit.withContext.js",
-      "types": "./dist/asyncIterator/emit.cacheFor/emit.withContext.d.ts"
+      "types": "./dist/asyncIterator/emit.cacheFor/emit.withContext.d.ts",
+      "import": "./dist/asyncIterator/emit.cacheFor/emit.withContext.js"
     },
     "./asyncIterator/emit.cacheFor/on.all": {
-      "import": "./dist/asyncIterator/emit.cacheFor/on.all.js",
-      "types": "./dist/asyncIterator/emit.cacheFor/on.all.d.ts"
+      "types": "./dist/asyncIterator/emit.cacheFor/on.all.d.ts",
+      "import": "./dist/asyncIterator/emit.cacheFor/on.all.js"
     },
     "./asyncIterator/emit.if/emit.ifListening": {
-      "import": "./dist/asyncIterator/emit.if/emit.ifListening.js",
-      "types": "./dist/asyncIterator/emit.if/emit.ifListening.d.ts"
+      "types": "./dist/asyncIterator/emit.if/emit.ifListening.d.ts",
+      "import": "./dist/asyncIterator/emit.if/emit.ifListening.js"
     },
     "./asyncIterator/emit.if/emit.withContext": {
-      "import": "./dist/asyncIterator/emit.if/emit.withContext.js",
-      "types": "./dist/asyncIterator/emit.if/emit.withContext.d.ts"
+      "types": "./dist/asyncIterator/emit.if/emit.withContext.d.ts",
+      "import": "./dist/asyncIterator/emit.if/emit.withContext.js"
     },
     "./asyncIterator/emit.if/on.all": {
-      "import": "./dist/asyncIterator/emit.if/on.all.js",
-      "types": "./dist/asyncIterator/emit.if/on.all.d.ts"
+      "types": "./dist/asyncIterator/emit.if/on.all.d.ts",
+      "import": "./dist/asyncIterator/emit.if/on.all.js"
     },
     "./asyncIterator/emit.ifListening/emit.withContext": {
-      "import": "./dist/asyncIterator/emit.ifListening/emit.withContext.js",
-      "types": "./dist/asyncIterator/emit.ifListening/emit.withContext.d.ts"
+      "types": "./dist/asyncIterator/emit.ifListening/emit.withContext.d.ts",
+      "import": "./dist/asyncIterator/emit.ifListening/emit.withContext.js"
     },
     "./asyncIterator/emit.ifListening/on.all": {
-      "import": "./dist/asyncIterator/emit.ifListening/on.all.js",
-      "types": "./dist/asyncIterator/emit.ifListening/on.all.d.ts"
+      "types": "./dist/asyncIterator/emit.ifListening/on.all.d.ts",
+      "import": "./dist/asyncIterator/emit.ifListening/on.all.js"
     },
     "./asyncIterator/emit.withContext/on.all": {
-      "import": "./dist/asyncIterator/emit.withContext/on.all.js",
-      "types": "./dist/asyncIterator/emit.withContext/on.all.d.ts"
+      "types": "./dist/asyncIterator/emit.withContext/on.all.d.ts",
+      "import": "./dist/asyncIterator/emit.withContext/on.all.js"
     },
     "./copyWith/emit.cacheFor/emit.if": {
-      "import": "./dist/copyWith/emit.cacheFor/emit.if.js",
-      "types": "./dist/copyWith/emit.cacheFor/emit.if.d.ts"
+      "types": "./dist/copyWith/emit.cacheFor/emit.if.d.ts",
+      "import": "./dist/copyWith/emit.cacheFor/emit.if.js"
     },
     "./copyWith/emit.cacheFor/emit.ifListening": {
-      "import": "./dist/copyWith/emit.cacheFor/emit.ifListening.js",
-      "types": "./dist/copyWith/emit.cacheFor/emit.ifListening.d.ts"
+      "types": "./dist/copyWith/emit.cacheFor/emit.ifListening.d.ts",
+      "import": "./dist/copyWith/emit.cacheFor/emit.ifListening.js"
     },
     "./copyWith/emit.cacheFor/emit.withContext": {
-      "import": "./dist/copyWith/emit.cacheFor/emit.withContext.js",
-      "types": "./dist/copyWith/emit.cacheFor/emit.withContext.d.ts"
+      "types": "./dist/copyWith/emit.cacheFor/emit.withContext.d.ts",
+      "import": "./dist/copyWith/emit.cacheFor/emit.withContext.js"
     },
     "./copyWith/emit.cacheFor/on.all": {
-      "import": "./dist/copyWith/emit.cacheFor/on.all.js",
-      "types": "./dist/copyWith/emit.cacheFor/on.all.d.ts"
+      "types": "./dist/copyWith/emit.cacheFor/on.all.d.ts",
+      "import": "./dist/copyWith/emit.cacheFor/on.all.js"
     },
     "./copyWith/emit.if/emit.ifListening": {
-      "import": "./dist/copyWith/emit.if/emit.ifListening.js",
-      "types": "./dist/copyWith/emit.if/emit.ifListening.d.ts"
+      "types": "./dist/copyWith/emit.if/emit.ifListening.d.ts",
+      "import": "./dist/copyWith/emit.if/emit.ifListening.js"
     },
     "./copyWith/emit.if/emit.withContext": {
-      "import": "./dist/copyWith/emit.if/emit.withContext.js",
-      "types": "./dist/copyWith/emit.if/emit.withContext.d.ts"
+      "types": "./dist/copyWith/emit.if/emit.withContext.d.ts",
+      "import": "./dist/copyWith/emit.if/emit.withContext.js"
     },
     "./copyWith/emit.if/on.all": {
-      "import": "./dist/copyWith/emit.if/on.all.js",
-      "types": "./dist/copyWith/emit.if/on.all.d.ts"
+      "types": "./dist/copyWith/emit.if/on.all.d.ts",
+      "import": "./dist/copyWith/emit.if/on.all.js"
     },
     "./copyWith/emit.ifListening/emit.withContext": {
-      "import": "./dist/copyWith/emit.ifListening/emit.withContext.js",
-      "types": "./dist/copyWith/emit.ifListening/emit.withContext.d.ts"
+      "types": "./dist/copyWith/emit.ifListening/emit.withContext.d.ts",
+      "import": "./dist/copyWith/emit.ifListening/emit.withContext.js"
     },
     "./copyWith/emit.ifListening/on.all": {
-      "import": "./dist/copyWith/emit.ifListening/on.all.js",
-      "types": "./dist/copyWith/emit.ifListening/on.all.d.ts"
+      "types": "./dist/copyWith/emit.ifListening/on.all.d.ts",
+      "import": "./dist/copyWith/emit.ifListening/on.all.js"
     },
     "./copyWith/emit.withContext/on.all": {
-      "import": "./dist/copyWith/emit.withContext/on.all.js",
-      "types": "./dist/copyWith/emit.withContext/on.all.d.ts"
+      "types": "./dist/copyWith/emit.withContext/on.all.d.ts",
+      "import": "./dist/copyWith/emit.withContext/on.all.js"
     },
     "./emit.cacheFor/emit.if/emit.ifListening": {
-      "import": "./dist/emit.cacheFor/emit.if/emit.ifListening.js",
-      "types": "./dist/emit.cacheFor/emit.if/emit.ifListening.d.ts"
+      "types": "./dist/emit.cacheFor/emit.if/emit.ifListening.d.ts",
+      "import": "./dist/emit.cacheFor/emit.if/emit.ifListening.js"
     },
     "./emit.cacheFor/emit.if/emit.withContext": {
-      "import": "./dist/emit.cacheFor/emit.if/emit.withContext.js",
-      "types": "./dist/emit.cacheFor/emit.if/emit.withContext.d.ts"
+      "types": "./dist/emit.cacheFor/emit.if/emit.withContext.d.ts",
+      "import": "./dist/emit.cacheFor/emit.if/emit.withContext.js"
     },
     "./emit.cacheFor/emit.if/on.all": {
-      "import": "./dist/emit.cacheFor/emit.if/on.all.js",
-      "types": "./dist/emit.cacheFor/emit.if/on.all.d.ts"
+      "types": "./dist/emit.cacheFor/emit.if/on.all.d.ts",
+      "import": "./dist/emit.cacheFor/emit.if/on.all.js"
     },
     "./emit.cacheFor/emit.ifListening/emit.withContext": {
-      "import": "./dist/emit.cacheFor/emit.ifListening/emit.withContext.js",
-      "types": "./dist/emit.cacheFor/emit.ifListening/emit.withContext.d.ts"
+      "types": "./dist/emit.cacheFor/emit.ifListening/emit.withContext.d.ts",
+      "import": "./dist/emit.cacheFor/emit.ifListening/emit.withContext.js"
     },
     "./emit.cacheFor/emit.ifListening/on.all": {
-      "import": "./dist/emit.cacheFor/emit.ifListening/on.all.js",
-      "types": "./dist/emit.cacheFor/emit.ifListening/on.all.d.ts"
+      "types": "./dist/emit.cacheFor/emit.ifListening/on.all.d.ts",
+      "import": "./dist/emit.cacheFor/emit.ifListening/on.all.js"
     },
     "./emit.cacheFor/emit.withContext/on.all": {
-      "import": "./dist/emit.cacheFor/emit.withContext/on.all.js",
-      "types": "./dist/emit.cacheFor/emit.withContext/on.all.d.ts"
+      "types": "./dist/emit.cacheFor/emit.withContext/on.all.d.ts",
+      "import": "./dist/emit.cacheFor/emit.withContext/on.all.js"
     },
     "./emit.if/emit.ifListening/emit.withContext": {
-      "import": "./dist/emit.if/emit.ifListening/emit.withContext.js",
-      "types": "./dist/emit.if/emit.ifListening/emit.withContext.d.ts"
+      "types": "./dist/emit.if/emit.ifListening/emit.withContext.d.ts",
+      "import": "./dist/emit.if/emit.ifListening/emit.withContext.js"
     },
     "./emit.if/emit.ifListening/on.all": {
-      "import": "./dist/emit.if/emit.ifListening/on.all.js",
-      "types": "./dist/emit.if/emit.ifListening/on.all.d.ts"
+      "types": "./dist/emit.if/emit.ifListening/on.all.d.ts",
+      "import": "./dist/emit.if/emit.ifListening/on.all.js"
     },
     "./emit.if/emit.withContext/on.all": {
-      "import": "./dist/emit.if/emit.withContext/on.all.js",
-      "types": "./dist/emit.if/emit.withContext/on.all.d.ts"
+      "types": "./dist/emit.if/emit.withContext/on.all.d.ts",
+      "import": "./dist/emit.if/emit.withContext/on.all.js"
     },
     "./emit.ifListening/emit.withContext/on.all": {
-      "import": "./dist/emit.ifListening/emit.withContext/on.all.js",
-      "types": "./dist/emit.ifListening/emit.withContext/on.all.d.ts"
+      "types": "./dist/emit.ifListening/emit.withContext/on.all.d.ts",
+      "import": "./dist/emit.ifListening/emit.withContext/on.all.js"
     },
     "./asyncIterator/copyWith/emit.cacheFor/emit.if": {
-      "import": "./dist/asyncIterator/copyWith/emit.cacheFor/emit.if.js",
-      "types": "./dist/asyncIterator/copyWith/emit.cacheFor/emit.if.d.ts"
+      "types": "./dist/asyncIterator/copyWith/emit.cacheFor/emit.if.d.ts",
+      "import": "./dist/asyncIterator/copyWith/emit.cacheFor/emit.if.js"
     },
     "./asyncIterator/copyWith/emit.cacheFor/emit.ifListening": {
-      "import": "./dist/asyncIterator/copyWith/emit.cacheFor/emit.ifListening.js",
-      "types": "./dist/asyncIterator/copyWith/emit.cacheFor/emit.ifListening.d.ts"
+      "types": "./dist/asyncIterator/copyWith/emit.cacheFor/emit.ifListening.d.ts",
+      "import": "./dist/asyncIterator/copyWith/emit.cacheFor/emit.ifListening.js"
     },
     "./asyncIterator/copyWith/emit.cacheFor/emit.withContext": {
-      "import": "./dist/asyncIterator/copyWith/emit.cacheFor/emit.withContext.js",
-      "types": "./dist/asyncIterator/copyWith/emit.cacheFor/emit.withContext.d.ts"
+      "types": "./dist/asyncIterator/copyWith/emit.cacheFor/emit.withContext.d.ts",
+      "import": "./dist/asyncIterator/copyWith/emit.cacheFor/emit.withContext.js"
     },
     "./asyncIterator/copyWith/emit.cacheFor/on.all": {
-      "import": "./dist/asyncIterator/copyWith/emit.cacheFor/on.all.js",
-      "types": "./dist/asyncIterator/copyWith/emit.cacheFor/on.all.d.ts"
+      "types": "./dist/asyncIterator/copyWith/emit.cacheFor/on.all.d.ts",
+      "import": "./dist/asyncIterator/copyWith/emit.cacheFor/on.all.js"
     },
     "./asyncIterator/copyWith/emit.if/emit.ifListening": {
-      "import": "./dist/asyncIterator/copyWith/emit.if/emit.ifListening.js",
-      "types": "./dist/asyncIterator/copyWith/emit.if/emit.ifListening.d.ts"
+      "types": "./dist/asyncIterator/copyWith/emit.if/emit.ifListening.d.ts",
+      "import": "./dist/asyncIterator/copyWith/emit.if/emit.ifListening.js"
     },
     "./asyncIterator/copyWith/emit.if/emit.withContext": {
-      "import": "./dist/asyncIterator/copyWith/emit.if/emit.withContext.js",
-      "types": "./dist/asyncIterator/copyWith/emit.if/emit.withContext.d.ts"
+      "types": "./dist/asyncIterator/copyWith/emit.if/emit.withContext.d.ts",
+      "import": "./dist/asyncIterator/copyWith/emit.if/emit.withContext.js"
     },
     "./asyncIterator/copyWith/emit.if/on.all": {
-      "import": "./dist/asyncIterator/copyWith/emit.if/on.all.js",
-      "types": "./dist/asyncIterator/copyWith/emit.if/on.all.d.ts"
+      "types": "./dist/asyncIterator/copyWith/emit.if/on.all.d.ts",
+      "import": "./dist/asyncIterator/copyWith/emit.if/on.all.js"
     },
     "./asyncIterator/copyWith/emit.ifListening/emit.withContext": {
-      "import": "./dist/asyncIterator/copyWith/emit.ifListening/emit.withContext.js",
-      "types": "./dist/asyncIterator/copyWith/emit.ifListening/emit.withContext.d.ts"
+      "types": "./dist/asyncIterator/copyWith/emit.ifListening/emit.withContext.d.ts",
+      "import": "./dist/asyncIterator/copyWith/emit.ifListening/emit.withContext.js"
     },
     "./asyncIterator/copyWith/emit.ifListening/on.all": {
-      "import": "./dist/asyncIterator/copyWith/emit.ifListening/on.all.js",
-      "types": "./dist/asyncIterator/copyWith/emit.ifListening/on.all.d.ts"
+      "types": "./dist/asyncIterator/copyWith/emit.ifListening/on.all.d.ts",
+      "import": "./dist/asyncIterator/copyWith/emit.ifListening/on.all.js"
     },
     "./asyncIterator/copyWith/emit.withContext/on.all": {
-      "import": "./dist/asyncIterator/copyWith/emit.withContext/on.all.js",
-      "types": "./dist/asyncIterator/copyWith/emit.withContext/on.all.d.ts"
+      "types": "./dist/asyncIterator/copyWith/emit.withContext/on.all.d.ts",
+      "import": "./dist/asyncIterator/copyWith/emit.withContext/on.all.js"
     },
     "./asyncIterator/emit.cacheFor/emit.if/emit.ifListening": {
-      "import": "./dist/asyncIterator/emit.cacheFor/emit.if/emit.ifListening.js",
-      "types": "./dist/asyncIterator/emit.cacheFor/emit.if/emit.ifListening.d.ts"
+      "types": "./dist/asyncIterator/emit.cacheFor/emit.if/emit.ifListening.d.ts",
+      "import": "./dist/asyncIterator/emit.cacheFor/emit.if/emit.ifListening.js"
     },
     "./asyncIterator/emit.cacheFor/emit.if/emit.withContext": {
-      "import": "./dist/asyncIterator/emit.cacheFor/emit.if/emit.withContext.js",
-      "types": "./dist/asyncIterator/emit.cacheFor/emit.if/emit.withContext.d.ts"
+      "types": "./dist/asyncIterator/emit.cacheFor/emit.if/emit.withContext.d.ts",
+      "import": "./dist/asyncIterator/emit.cacheFor/emit.if/emit.withContext.js"
     },
     "./asyncIterator/emit.cacheFor/emit.if/on.all": {
-      "import": "./dist/asyncIterator/emit.cacheFor/emit.if/on.all.js",
-      "types": "./dist/asyncIterator/emit.cacheFor/emit.if/on.all.d.ts"
+      "types": "./dist/asyncIterator/emit.cacheFor/emit.if/on.all.d.ts",
+      "import": "./dist/asyncIterator/emit.cacheFor/emit.if/on.all.js"
     },
     "./asyncIterator/emit.cacheFor/emit.ifListening/emit.withContext": {
-      "import": "./dist/asyncIterator/emit.cacheFor/emit.ifListening/emit.withContext.js",
-      "types": "./dist/asyncIterator/emit.cacheFor/emit.ifListening/emit.withContext.d.ts"
+      "types": "./dist/asyncIterator/emit.cacheFor/emit.ifListening/emit.withContext.d.ts",
+      "import": "./dist/asyncIterator/emit.cacheFor/emit.ifListening/emit.withContext.js"
     },
     "./asyncIterator/emit.cacheFor/emit.ifListening/on.all": {
-      "import": "./dist/asyncIterator/emit.cacheFor/emit.ifListening/on.all.js",
-      "types": "./dist/asyncIterator/emit.cacheFor/emit.ifListening/on.all.d.ts"
+      "types": "./dist/asyncIterator/emit.cacheFor/emit.ifListening/on.all.d.ts",
+      "import": "./dist/asyncIterator/emit.cacheFor/emit.ifListening/on.all.js"
     },
     "./asyncIterator/emit.cacheFor/emit.withContext/on.all": {
-      "import": "./dist/asyncIterator/emit.cacheFor/emit.withContext/on.all.js",
-      "types": "./dist/asyncIterator/emit.cacheFor/emit.withContext/on.all.d.ts"
+      "types": "./dist/asyncIterator/emit.cacheFor/emit.withContext/on.all.d.ts",
+      "import": "./dist/asyncIterator/emit.cacheFor/emit.withContext/on.all.js"
     },
     "./asyncIterator/emit.if/emit.ifListening/emit.withContext": {
-      "import": "./dist/asyncIterator/emit.if/emit.ifListening/emit.withContext.js",
-      "types": "./dist/asyncIterator/emit.if/emit.ifListening/emit.withContext.d.ts"
+      "types": "./dist/asyncIterator/emit.if/emit.ifListening/emit.withContext.d.ts",
+      "import": "./dist/asyncIterator/emit.if/emit.ifListening/emit.withContext.js"
     },
     "./asyncIterator/emit.if/emit.ifListening/on.all": {
-      "import": "./dist/asyncIterator/emit.if/emit.ifListening/on.all.js",
-      "types": "./dist/asyncIterator/emit.if/emit.ifListening/on.all.d.ts"
+      "types": "./dist/asyncIterator/emit.if/emit.ifListening/on.all.d.ts",
+      "import": "./dist/asyncIterator/emit.if/emit.ifListening/on.all.js"
     },
     "./asyncIterator/emit.if/emit.withContext/on.all": {
-      "import": "./dist/asyncIterator/emit.if/emit.withContext/on.all.js",
-      "types": "./dist/asyncIterator/emit.if/emit.withContext/on.all.d.ts"
+      "types": "./dist/asyncIterator/emit.if/emit.withContext/on.all.d.ts",
+      "import": "./dist/asyncIterator/emit.if/emit.withContext/on.all.js"
     },
     "./asyncIterator/emit.ifListening/emit.withContext/on.all": {
-      "import": "./dist/asyncIterator/emit.ifListening/emit.withContext/on.all.js",
-      "types": "./dist/asyncIterator/emit.ifListening/emit.withContext/on.all.d.ts"
+      "types": "./dist/asyncIterator/emit.ifListening/emit.withContext/on.all.d.ts",
+      "import": "./dist/asyncIterator/emit.ifListening/emit.withContext/on.all.js"
     },
     "./copyWith/emit.cacheFor/emit.if/emit.ifListening": {
-      "import": "./dist/copyWith/emit.cacheFor/emit.if/emit.ifListening.js",
-      "types": "./dist/copyWith/emit.cacheFor/emit.if/emit.ifListening.d.ts"
+      "types": "./dist/copyWith/emit.cacheFor/emit.if/emit.ifListening.d.ts",
+      "import": "./dist/copyWith/emit.cacheFor/emit.if/emit.ifListening.js"
     },
     "./copyWith/emit.cacheFor/emit.if/emit.withContext": {
-      "import": "./dist/copyWith/emit.cacheFor/emit.if/emit.withContext.js",
-      "types": "./dist/copyWith/emit.cacheFor/emit.if/emit.withContext.d.ts"
+      "types": "./dist/copyWith/emit.cacheFor/emit.if/emit.withContext.d.ts",
+      "import": "./dist/copyWith/emit.cacheFor/emit.if/emit.withContext.js"
     },
     "./copyWith/emit.cacheFor/emit.if/on.all": {
-      "import": "./dist/copyWith/emit.cacheFor/emit.if/on.all.js",
-      "types": "./dist/copyWith/emit.cacheFor/emit.if/on.all.d.ts"
+      "types": "./dist/copyWith/emit.cacheFor/emit.if/on.all.d.ts",
+      "import": "./dist/copyWith/emit.cacheFor/emit.if/on.all.js"
     },
     "./copyWith/emit.cacheFor/emit.ifListening/emit.withContext": {
-      "import": "./dist/copyWith/emit.cacheFor/emit.ifListening/emit.withContext.js",
-      "types": "./dist/copyWith/emit.cacheFor/emit.ifListening/emit.withContext.d.ts"
+      "types": "./dist/copyWith/emit.cacheFor/emit.ifListening/emit.withContext.d.ts",
+      "import": "./dist/copyWith/emit.cacheFor/emit.ifListening/emit.withContext.js"
     },
     "./copyWith/emit.cacheFor/emit.ifListening/on.all": {
-      "import": "./dist/copyWith/emit.cacheFor/emit.ifListening/on.all.js",
-      "types": "./dist/copyWith/emit.cacheFor/emit.ifListening/on.all.d.ts"
+      "types": "./dist/copyWith/emit.cacheFor/emit.ifListening/on.all.d.ts",
+      "import": "./dist/copyWith/emit.cacheFor/emit.ifListening/on.all.js"
     },
     "./copyWith/emit.cacheFor/emit.withContext/on.all": {
-      "import": "./dist/copyWith/emit.cacheFor/emit.withContext/on.all.js",
-      "types": "./dist/copyWith/emit.cacheFor/emit.withContext/on.all.d.ts"
+      "types": "./dist/copyWith/emit.cacheFor/emit.withContext/on.all.d.ts",
+      "import": "./dist/copyWith/emit.cacheFor/emit.withContext/on.all.js"
     },
     "./copyWith/emit.if/emit.ifListening/emit.withContext": {
-      "import": "./dist/copyWith/emit.if/emit.ifListening/emit.withContext.js",
-      "types": "./dist/copyWith/emit.if/emit.ifListening/emit.withContext.d.ts"
+      "types": "./dist/copyWith/emit.if/emit.ifListening/emit.withContext.d.ts",
+      "import": "./dist/copyWith/emit.if/emit.ifListening/emit.withContext.js"
     },
     "./copyWith/emit.if/emit.ifListening/on.all": {
-      "import": "./dist/copyWith/emit.if/emit.ifListening/on.all.js",
-      "types": "./dist/copyWith/emit.if/emit.ifListening/on.all.d.ts"
+      "types": "./dist/copyWith/emit.if/emit.ifListening/on.all.d.ts",
+      "import": "./dist/copyWith/emit.if/emit.ifListening/on.all.js"
     },
     "./copyWith/emit.if/emit.withContext/on.all": {
-      "import": "./dist/copyWith/emit.if/emit.withContext/on.all.js",
-      "types": "./dist/copyWith/emit.if/emit.withContext/on.all.d.ts"
+      "types": "./dist/copyWith/emit.if/emit.withContext/on.all.d.ts",
+      "import": "./dist/copyWith/emit.if/emit.withContext/on.all.js"
     },
     "./copyWith/emit.ifListening/emit.withContext/on.all": {
-      "import": "./dist/copyWith/emit.ifListening/emit.withContext/on.all.js",
-      "types": "./dist/copyWith/emit.ifListening/emit.withContext/on.all.d.ts"
+      "types": "./dist/copyWith/emit.ifListening/emit.withContext/on.all.d.ts",
+      "import": "./dist/copyWith/emit.ifListening/emit.withContext/on.all.js"
     },
     "./emit.cacheFor/emit.if/emit.ifListening/emit.withContext": {
-      "import": "./dist/emit.cacheFor/emit.if/emit.ifListening/emit.withContext.js",
-      "types": "./dist/emit.cacheFor/emit.if/emit.ifListening/emit.withContext.d.ts"
+      "types": "./dist/emit.cacheFor/emit.if/emit.ifListening/emit.withContext.d.ts",
+      "import": "./dist/emit.cacheFor/emit.if/emit.ifListening/emit.withContext.js"
     },
     "./emit.cacheFor/emit.if/emit.ifListening/on.all": {
-      "import": "./dist/emit.cacheFor/emit.if/emit.ifListening/on.all.js",
-      "types": "./dist/emit.cacheFor/emit.if/emit.ifListening/on.all.d.ts"
+      "types": "./dist/emit.cacheFor/emit.if/emit.ifListening/on.all.d.ts",
+      "import": "./dist/emit.cacheFor/emit.if/emit.ifListening/on.all.js"
     },
     "./emit.cacheFor/emit.if/emit.withContext/on.all": {
-      "import": "./dist/emit.cacheFor/emit.if/emit.withContext/on.all.js",
-      "types": "./dist/emit.cacheFor/emit.if/emit.withContext/on.all.d.ts"
+      "types": "./dist/emit.cacheFor/emit.if/emit.withContext/on.all.d.ts",
+      "import": "./dist/emit.cacheFor/emit.if/emit.withContext/on.all.js"
     },
     "./emit.cacheFor/emit.ifListening/emit.withContext/on.all": {
-      "import": "./dist/emit.cacheFor/emit.ifListening/emit.withContext/on.all.js",
-      "types": "./dist/emit.cacheFor/emit.ifListening/emit.withContext/on.all.d.ts"
+      "types": "./dist/emit.cacheFor/emit.ifListening/emit.withContext/on.all.d.ts",
+      "import": "./dist/emit.cacheFor/emit.ifListening/emit.withContext/on.all.js"
     },
     "./emit.if/emit.ifListening/emit.withContext/on.all": {
-      "import": "./dist/emit.if/emit.ifListening/emit.withContext/on.all.js",
-      "types": "./dist/emit.if/emit.ifListening/emit.withContext/on.all.d.ts"
+      "types": "./dist/emit.if/emit.ifListening/emit.withContext/on.all.d.ts",
+      "import": "./dist/emit.if/emit.ifListening/emit.withContext/on.all.js"
     },
     "./asyncIterator/copyWith/emit.cacheFor/emit.if/emit.ifListening": {
-      "import": "./dist/asyncIterator/copyWith/emit.cacheFor/emit.if/emit.ifListening.js",
-      "types": "./dist/asyncIterator/copyWith/emit.cacheFor/emit.if/emit.ifListening.d.ts"
+      "types": "./dist/asyncIterator/copyWith/emit.cacheFor/emit.if/emit.ifListening.d.ts",
+      "import": "./dist/asyncIterator/copyWith/emit.cacheFor/emit.if/emit.ifListening.js"
     },
     "./asyncIterator/copyWith/emit.cacheFor/emit.if/emit.withContext": {
-      "import": "./dist/asyncIterator/copyWith/emit.cacheFor/emit.if/emit.withContext.js",
-      "types": "./dist/asyncIterator/copyWith/emit.cacheFor/emit.if/emit.withContext.d.ts"
+      "types": "./dist/asyncIterator/copyWith/emit.cacheFor/emit.if/emit.withContext.d.ts",
+      "import": "./dist/asyncIterator/copyWith/emit.cacheFor/emit.if/emit.withContext.js"
     },
     "./asyncIterator/copyWith/emit.cacheFor/emit.if/on.all": {
-      "import": "./dist/asyncIterator/copyWith/emit.cacheFor/emit.if/on.all.js",
-      "types": "./dist/asyncIterator/copyWith/emit.cacheFor/emit.if/on.all.d.ts"
+      "types": "./dist/asyncIterator/copyWith/emit.cacheFor/emit.if/on.all.d.ts",
+      "import": "./dist/asyncIterator/copyWith/emit.cacheFor/emit.if/on.all.js"
     },
     "./asyncIterator/copyWith/emit.cacheFor/emit.ifListening/emit.withContext": {
-      "import": "./dist/asyncIterator/copyWith/emit.cacheFor/emit.ifListening/emit.withContext.js",
-      "types": "./dist/asyncIterator/copyWith/emit.cacheFor/emit.ifListening/emit.withContext.d.ts"
+      "types": "./dist/asyncIterator/copyWith/emit.cacheFor/emit.ifListening/emit.withContext.d.ts",
+      "import": "./dist/asyncIterator/copyWith/emit.cacheFor/emit.ifListening/emit.withContext.js"
     },
     "./asyncIterator/copyWith/emit.cacheFor/emit.ifListening/on.all": {
-      "import": "./dist/asyncIterator/copyWith/emit.cacheFor/emit.ifListening/on.all.js",
-      "types": "./dist/asyncIterator/copyWith/emit.cacheFor/emit.ifListening/on.all.d.ts"
+      "types": "./dist/asyncIterator/copyWith/emit.cacheFor/emit.ifListening/on.all.d.ts",
+      "import": "./dist/asyncIterator/copyWith/emit.cacheFor/emit.ifListening/on.all.js"
     },
     "./asyncIterator/copyWith/emit.cacheFor/emit.withContext/on.all": {
-      "import": "./dist/asyncIterator/copyWith/emit.cacheFor/emit.withContext/on.all.js",
-      "types": "./dist/asyncIterator/copyWith/emit.cacheFor/emit.withContext/on.all.d.ts"
+      "types": "./dist/asyncIterator/copyWith/emit.cacheFor/emit.withContext/on.all.d.ts",
+      "import": "./dist/asyncIterator/copyWith/emit.cacheFor/emit.withContext/on.all.js"
     },
     "./asyncIterator/copyWith/emit.if/emit.ifListening/emit.withContext": {
-      "import": "./dist/asyncIterator/copyWith/emit.if/emit.ifListening/emit.withContext.js",
-      "types": "./dist/asyncIterator/copyWith/emit.if/emit.ifListening/emit.withContext.d.ts"
+      "types": "./dist/asyncIterator/copyWith/emit.if/emit.ifListening/emit.withContext.d.ts",
+      "import": "./dist/asyncIterator/copyWith/emit.if/emit.ifListening/emit.withContext.js"
     },
     "./asyncIterator/copyWith/emit.if/emit.ifListening/on.all": {
-      "import": "./dist/asyncIterator/copyWith/emit.if/emit.ifListening/on.all.js",
-      "types": "./dist/asyncIterator/copyWith/emit.if/emit.ifListening/on.all.d.ts"
+      "types": "./dist/asyncIterator/copyWith/emit.if/emit.ifListening/on.all.d.ts",
+      "import": "./dist/asyncIterator/copyWith/emit.if/emit.ifListening/on.all.js"
     },
     "./asyncIterator/copyWith/emit.if/emit.withContext/on.all": {
-      "import": "./dist/asyncIterator/copyWith/emit.if/emit.withContext/on.all.js",
-      "types": "./dist/asyncIterator/copyWith/emit.if/emit.withContext/on.all.d.ts"
+      "types": "./dist/asyncIterator/copyWith/emit.if/emit.withContext/on.all.d.ts",
+      "import": "./dist/asyncIterator/copyWith/emit.if/emit.withContext/on.all.js"
     },
     "./asyncIterator/copyWith/emit.ifListening/emit.withContext/on.all": {
-      "import": "./dist/asyncIterator/copyWith/emit.ifListening/emit.withContext/on.all.js",
-      "types": "./dist/asyncIterator/copyWith/emit.ifListening/emit.withContext/on.all.d.ts"
+      "types": "./dist/asyncIterator/copyWith/emit.ifListening/emit.withContext/on.all.d.ts",
+      "import": "./dist/asyncIterator/copyWith/emit.ifListening/emit.withContext/on.all.js"
     },
     "./asyncIterator/emit.cacheFor/emit.if/emit.ifListening/emit.withContext": {
-      "import": "./dist/asyncIterator/emit.cacheFor/emit.if/emit.ifListening/emit.withContext.js",
-      "types": "./dist/asyncIterator/emit.cacheFor/emit.if/emit.ifListening/emit.withContext.d.ts"
+      "types": "./dist/asyncIterator/emit.cacheFor/emit.if/emit.ifListening/emit.withContext.d.ts",
+      "import": "./dist/asyncIterator/emit.cacheFor/emit.if/emit.ifListening/emit.withContext.js"
     },
     "./asyncIterator/emit.cacheFor/emit.if/emit.ifListening/on.all": {
-      "import": "./dist/asyncIterator/emit.cacheFor/emit.if/emit.ifListening/on.all.js",
-      "types": "./dist/asyncIterator/emit.cacheFor/emit.if/emit.ifListening/on.all.d.ts"
+      "types": "./dist/asyncIterator/emit.cacheFor/emit.if/emit.ifListening/on.all.d.ts",
+      "import": "./dist/asyncIterator/emit.cacheFor/emit.if/emit.ifListening/on.all.js"
     },
     "./asyncIterator/emit.cacheFor/emit.if/emit.withContext/on.all": {
-      "import": "./dist/asyncIterator/emit.cacheFor/emit.if/emit.withContext/on.all.js",
-      "types": "./dist/asyncIterator/emit.cacheFor/emit.if/emit.withContext/on.all.d.ts"
+      "types": "./dist/asyncIterator/emit.cacheFor/emit.if/emit.withContext/on.all.d.ts",
+      "import": "./dist/asyncIterator/emit.cacheFor/emit.if/emit.withContext/on.all.js"
     },
     "./asyncIterator/emit.cacheFor/emit.ifListening/emit.withContext/on.all": {
-      "import": "./dist/asyncIterator/emit.cacheFor/emit.ifListening/emit.withContext/on.all.js",
-      "types": "./dist/asyncIterator/emit.cacheFor/emit.ifListening/emit.withContext/on.all.d.ts"
+      "types": "./dist/asyncIterator/emit.cacheFor/emit.ifListening/emit.withContext/on.all.d.ts",
+      "import": "./dist/asyncIterator/emit.cacheFor/emit.ifListening/emit.withContext/on.all.js"
     },
     "./asyncIterator/emit.if/emit.ifListening/emit.withContext/on.all": {
-      "import": "./dist/asyncIterator/emit.if/emit.ifListening/emit.withContext/on.all.js",
-      "types": "./dist/asyncIterator/emit.if/emit.ifListening/emit.withContext/on.all.d.ts"
+      "types": "./dist/asyncIterator/emit.if/emit.ifListening/emit.withContext/on.all.d.ts",
+      "import": "./dist/asyncIterator/emit.if/emit.ifListening/emit.withContext/on.all.js"
     },
     "./copyWith/emit.cacheFor/emit.if/emit.ifListening/emit.withContext": {
-      "import": "./dist/copyWith/emit.cacheFor/emit.if/emit.ifListening/emit.withContext.js",
-      "types": "./dist/copyWith/emit.cacheFor/emit.if/emit.ifListening/emit.withContext.d.ts"
+      "types": "./dist/copyWith/emit.cacheFor/emit.if/emit.ifListening/emit.withContext.d.ts",
+      "import": "./dist/copyWith/emit.cacheFor/emit.if/emit.ifListening/emit.withContext.js"
     },
     "./copyWith/emit.cacheFor/emit.if/emit.ifListening/on.all": {
-      "import": "./dist/copyWith/emit.cacheFor/emit.if/emit.ifListening/on.all.js",
-      "types": "./dist/copyWith/emit.cacheFor/emit.if/emit.ifListening/on.all.d.ts"
+      "types": "./dist/copyWith/emit.cacheFor/emit.if/emit.ifListening/on.all.d.ts",
+      "import": "./dist/copyWith/emit.cacheFor/emit.if/emit.ifListening/on.all.js"
     },
     "./copyWith/emit.cacheFor/emit.if/emit.withContext/on.all": {
-      "import": "./dist/copyWith/emit.cacheFor/emit.if/emit.withContext/on.all.js",
-      "types": "./dist/copyWith/emit.cacheFor/emit.if/emit.withContext/on.all.d.ts"
+      "types": "./dist/copyWith/emit.cacheFor/emit.if/emit.withContext/on.all.d.ts",
+      "import": "./dist/copyWith/emit.cacheFor/emit.if/emit.withContext/on.all.js"
     },
     "./copyWith/emit.cacheFor/emit.ifListening/emit.withContext/on.all": {
-      "import": "./dist/copyWith/emit.cacheFor/emit.ifListening/emit.withContext/on.all.js",
-      "types": "./dist/copyWith/emit.cacheFor/emit.ifListening/emit.withContext/on.all.d.ts"
+      "types": "./dist/copyWith/emit.cacheFor/emit.ifListening/emit.withContext/on.all.d.ts",
+      "import": "./dist/copyWith/emit.cacheFor/emit.ifListening/emit.withContext/on.all.js"
     },
     "./copyWith/emit.if/emit.ifListening/emit.withContext/on.all": {
-      "import": "./dist/copyWith/emit.if/emit.ifListening/emit.withContext/on.all.js",
-      "types": "./dist/copyWith/emit.if/emit.ifListening/emit.withContext/on.all.d.ts"
+      "types": "./dist/copyWith/emit.if/emit.ifListening/emit.withContext/on.all.d.ts",
+      "import": "./dist/copyWith/emit.if/emit.ifListening/emit.withContext/on.all.js"
     },
     "./emit.cacheFor/emit.if/emit.ifListening/emit.withContext/on.all": {
-      "import": "./dist/emit.cacheFor/emit.if/emit.ifListening/emit.withContext/on.all.js",
-      "types": "./dist/emit.cacheFor/emit.if/emit.ifListening/emit.withContext/on.all.d.ts"
+      "types": "./dist/emit.cacheFor/emit.if/emit.ifListening/emit.withContext/on.all.d.ts",
+      "import": "./dist/emit.cacheFor/emit.if/emit.ifListening/emit.withContext/on.all.js"
     },
     "./asyncIterator/copyWith/emit.cacheFor/emit.if/emit.ifListening/emit.withContext": {
-      "import": "./dist/asyncIterator/copyWith/emit.cacheFor/emit.if/emit.ifListening/emit.withContext.js",
-      "types": "./dist/asyncIterator/copyWith/emit.cacheFor/emit.if/emit.ifListening/emit.withContext.d.ts"
+      "types": "./dist/asyncIterator/copyWith/emit.cacheFor/emit.if/emit.ifListening/emit.withContext.d.ts",
+      "import": "./dist/asyncIterator/copyWith/emit.cacheFor/emit.if/emit.ifListening/emit.withContext.js"
     },
     "./asyncIterator/copyWith/emit.cacheFor/emit.if/emit.ifListening/on.all": {
-      "import": "./dist/asyncIterator/copyWith/emit.cacheFor/emit.if/emit.ifListening/on.all.js",
-      "types": "./dist/asyncIterator/copyWith/emit.cacheFor/emit.if/emit.ifListening/on.all.d.ts"
+      "types": "./dist/asyncIterator/copyWith/emit.cacheFor/emit.if/emit.ifListening/on.all.d.ts",
+      "import": "./dist/asyncIterator/copyWith/emit.cacheFor/emit.if/emit.ifListening/on.all.js"
     },
     "./asyncIterator/copyWith/emit.cacheFor/emit.if/emit.withContext/on.all": {
-      "import": "./dist/asyncIterator/copyWith/emit.cacheFor/emit.if/emit.withContext/on.all.js",
-      "types": "./dist/asyncIterator/copyWith/emit.cacheFor/emit.if/emit.withContext/on.all.d.ts"
+      "types": "./dist/asyncIterator/copyWith/emit.cacheFor/emit.if/emit.withContext/on.all.d.ts",
+      "import": "./dist/asyncIterator/copyWith/emit.cacheFor/emit.if/emit.withContext/on.all.js"
     },
     "./asyncIterator/copyWith/emit.cacheFor/emit.ifListening/emit.withContext/on.all": {
-      "import": "./dist/asyncIterator/copyWith/emit.cacheFor/emit.ifListening/emit.withContext/on.all.js",
-      "types": "./dist/asyncIterator/copyWith/emit.cacheFor/emit.ifListening/emit.withContext/on.all.d.ts"
+      "types": "./dist/asyncIterator/copyWith/emit.cacheFor/emit.ifListening/emit.withContext/on.all.d.ts",
+      "import": "./dist/asyncIterator/copyWith/emit.cacheFor/emit.ifListening/emit.withContext/on.all.js"
     },
     "./asyncIterator/copyWith/emit.if/emit.ifListening/emit.withContext/on.all": {
-      "import": "./dist/asyncIterator/copyWith/emit.if/emit.ifListening/emit.withContext/on.all.js",
-      "types": "./dist/asyncIterator/copyWith/emit.if/emit.ifListening/emit.withContext/on.all.d.ts"
+      "types": "./dist/asyncIterator/copyWith/emit.if/emit.ifListening/emit.withContext/on.all.d.ts",
+      "import": "./dist/asyncIterator/copyWith/emit.if/emit.ifListening/emit.withContext/on.all.js"
     },
     "./asyncIterator/emit.cacheFor/emit.if/emit.ifListening/emit.withContext/on.all": {
-      "import": "./dist/asyncIterator/emit.cacheFor/emit.if/emit.ifListening/emit.withContext/on.all.js",
-      "types": "./dist/asyncIterator/emit.cacheFor/emit.if/emit.ifListening/emit.withContext/on.all.d.ts"
+      "types": "./dist/asyncIterator/emit.cacheFor/emit.if/emit.ifListening/emit.withContext/on.all.d.ts",
+      "import": "./dist/asyncIterator/emit.cacheFor/emit.if/emit.ifListening/emit.withContext/on.all.js"
     },
     "./copyWith/emit.cacheFor/emit.if/emit.ifListening/emit.withContext/on.all": {
-      "import": "./dist/copyWith/emit.cacheFor/emit.if/emit.ifListening/emit.withContext/on.all.js",
-      "types": "./dist/copyWith/emit.cacheFor/emit.if/emit.ifListening/emit.withContext/on.all.d.ts"
+      "types": "./dist/copyWith/emit.cacheFor/emit.if/emit.ifListening/emit.withContext/on.all.d.ts",
+      "import": "./dist/copyWith/emit.cacheFor/emit.if/emit.ifListening/emit.withContext/on.all.js"
     },
     "./asyncIterator/copyWith/emit.cacheFor/emit.if/emit.ifListening/emit.withContext/on.all": {
-      "import": "./dist/asyncIterator/copyWith/emit.cacheFor/emit.if/emit.ifListening/emit.withContext/on.all.js",
-      "types": "./dist/asyncIterator/copyWith/emit.cacheFor/emit.if/emit.ifListening/emit.withContext/on.all.d.ts"
+      "types": "./dist/asyncIterator/copyWith/emit.cacheFor/emit.if/emit.ifListening/emit.withContext/on.all.d.ts",
+      "import": "./dist/asyncIterator/copyWith/emit.cacheFor/emit.if/emit.ifListening/emit.withContext/on.all.js"
     }
   }
 }

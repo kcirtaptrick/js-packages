@@ -62,8 +62,9 @@ await fs.writeFile(
         Object.entries(exports).map(([path, file]) => [
           path,
           {
-            import: file,
+            // Must be first
             types: `${file.slice(0, file.lastIndexOf("."))}.d.ts`,
+            import: file,
           },
         ])
       ),

@@ -1,5 +1,5 @@
 {
-  "name": "solid-packages",
+  "name": "js-packages",
   "version": "1.0.0",
   "private": true,
   "workspaces": [

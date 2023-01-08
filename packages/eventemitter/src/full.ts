@@ -1,4 +1,4 @@
-/* asyncIterator copyWith destroy emit.cacheFor emit.if emit.ifListening emit.withContext many on.all once */
+/* asyncIterator clone destroy emit.cacheUntil emit.if emit.ifListening emit.withContext many on.all once */
 
 type EventDetails = [name: any, data?: any, returnValue?: any];
 
@@ -40,12 +40,12 @@ export default class EventEmitterConfiguration<
   Context extends any = never
   /* /emit.withContext */
 > {
-  listeners = new Map<
+  #listeners = new Map<
     T[number][0] /* +on.all */ | typeof LISTEN_ALL /* /on.all */,
     Set<(...args: any) => any>
   >();
 
-  /* +emit.cacheFor */
+  /* +emit.cacheUntil */
   private cache = new Map<
     T[number][0] /* +on.all */ | typeof LISTEN_ALL /* /on.all */,
     Set<
@@ -58,18 +58,23 @@ export default class EventEmitterConfiguration<
       ]
     >
   >();
-  /* /emit.cacheFor */
+  /* /emit.cacheUntil */
 
   constructor() {
     /* +destroy */
     this.destroy = this.destroy.bind(this);
     /* /destroy */
-    /* +copyWith */
-    this.copyWith = this.copyWith.bind(this);
-    /* /copyWith */
+    /* +clone */
+    this.clone = this.clone.bind(this);
+    /* /clone */
   }
 
   get on() {
+    type Self = EventEmitterConfiguration<
+      T /* +emit.withContext */,
+      Context /* /emit.withContext */
+    >;
+    const self = this;
     const on = <
       E extends T[number][0],
       Details extends FilterDetailsFromName<T, E>[number]
@@ -81,13 +86,22 @@ export default class EventEmitterConfiguration<
           Details /* +emit.withContext */,
           Context /* /emit.withContext */
         >
-    ) => {
-      if (!this.listeners.has(name)) this.listeners.set(name, new Set());
+    ): {
+      and: Self;
+      off: () => {
+        and: Self;
+        removed: boolean;
+      };
+      /* +asyncIterator */
+      [Symbol.asyncIterator](): AsyncIterableIterator<Details[1]>;
+      /* /asyncIterator */
+    } => {
+      if (!this.#listeners.has(name)) this.#listeners.set(name, new Set());
 
       if (handler) {
-        this.listeners.get(name)!.add(handler);
+        this.#listeners.get(name)!.add(handler);
 
-        /* +emit.cacheFor */
+        /* +emit.cacheUntil */
         if (this.cache.has(name)) {
           for (const [_name, data/* +emit.withContext */, context/* /emit.withContext */] of this.cache.get(name)!)
           // prettier-ignore
@@ -108,7 +122,7 @@ export default class EventEmitterConfiguration<
               /* /emit.withContext */
             );
         }
-        /* /emit.cacheFor */
+        /* /emit.cacheUntil */
       }
 
       return {
@@ -118,13 +132,33 @@ export default class EventEmitterConfiguration<
         >,
         off: () => this.off(name, handler!),
         /* +asyncIterator */
-        async *[Symbol.asyncIterator](): AsyncIterableIterator<Details[1]> {
+        async *[Symbol.asyncIterator]() {
+          const buffer: Details[1][] = [];
+          let next: ((value: Details[1]) => void) | null = null;
+
+          /* +on.all */
+          if (name === LISTEN_ALL)
+            self.on.all((name, data) => {
+              const value: any = [name, data];
+              if (next) next(value);
+              else buffer.push(value);
+            });
+          // prettier-ignore
+          else
+          /* /on.all */ 
+            on(name, (data) => {
+              if (next) next(data);
+              else buffer.push(data);
+            });
+
           while (true) {
             yield await new Promise((resolve) => {
-              const { off } = on(name, (data) => {
-                resolve(data);
-                off();
-              });
+              if (buffer.length > 0) resolve(buffer.shift()!);
+              else
+                next = (value) => {
+                  next = null;
+                  resolve(value);
+                };
             });
           }
         },
@@ -132,40 +166,24 @@ export default class EventEmitterConfiguration<
       };
     };
 
-    /* +asyncIterator */
-    const self = this;
-    /* /asyncIterator */
-
     return Object.assign(on, {
       /* +on.all */
       // Cannot return this type: The inferred type of 'on' references an
       // inaccessible 'this' type. A type annotation is necessary.
+      // prettier-ignore
       all: (
-        // prettier-ignore
         handler/* +asyncIterator */?/* /asyncIterator */: (
           name: T[number][0],
           data: T[number][1],
           /* +emit.withContext */
           context: Context
           /* /emit.withContext */
-        ) => void | typeof EventEmitterConfiguration.Track
-      ) => ({
-        ...on(LISTEN_ALL, handler as any),
-        /* +asyncIterator */
-        async *[Symbol.asyncIterator](): AsyncIterableIterator<
-          [name: T[number][0], data: T[number][1]]
-        > {
-          while (true) {
-            yield await new Promise((resolve) => {
-              const { off } = self.on.all((name, data) => {
-                resolve([name, data]);
-                off();
-              });
-            });
-          }
-        },
-        /* /asyncIterator */
-      }),
+        ) => void | Track<T[number][2]>
+      )/* +asyncIterator */: ReturnType<typeof on> & {
+        [Symbol.asyncIterator](): AsyncIterableIterator<
+          [T[number][0], T[number][1]]
+        >;
+      } /* /asyncIterator */ => on(LISTEN_ALL, handler as any),
       /* /on.all */
     });
   }
@@ -221,7 +239,7 @@ export default class EventEmitterConfiguration<
       >
     ) => {
       const { off, and } = this.on(name, (...args) => {
-        if (count-- === 0) off();
+        if (--count === 0) off();
 
         return handler(...args);
       });
@@ -233,7 +251,7 @@ export default class EventEmitterConfiguration<
       /* +on.all */
       all: (count: number, handler: Parameters<this["on"]["all"]>[0]) => {
         const { off, and } = this.on.all((...args) => {
-          if (count-- === 0) off();
+          if (--count === 0) off();
 
           return handler?.(...args);
         });
@@ -261,7 +279,7 @@ export default class EventEmitterConfiguration<
       name: E,
       handler: HandlerFromData<Details>
     ) => {
-      const removed = !!this.listeners.get(name)?.delete(handler);
+      const removed = !!this.#listeners.get(name)?.delete(handler);
 
       return {
         and: this as EventEmitterConfiguration<
@@ -282,8 +300,8 @@ export default class EventEmitterConfiguration<
 
   /* +destroy */
   destroy(name: T[number][0] = DESTROY_ALL) {
-    if (name === DESTROY_ALL) this.listeners.clear();
-    else this.listeners.delete(name);
+    if (name === DESTROY_ALL) this.#listeners.clear();
+    else this.#listeners.delete(name);
   }
   /* /destroy */
 
@@ -291,9 +309,9 @@ export default class EventEmitterConfiguration<
     /* +emit.withContext */
     let ctx: Context | null = null;
     /* /emit.withContext */
-    /* +emit.cacheFor */
-    let cacheTime = 0;
-    /* /emit.cacheFor */
+    /* +emit.cacheUntil */
+    let cacheUntil: Promise<any> | null = null;
+    /* /emit.cacheUntil */
 
     const emit = Object.assign(
       <
@@ -313,10 +331,10 @@ export default class EventEmitterConfiguration<
         const res = [];
         for (const key of keys)
           // prettier-ignore
-          if (this.listeners.has(key))
+          if (this.#listeners.has(key))
             /* +on.all */
             if (key === LISTEN_ALL)
-              for (const listener of this.listeners.get(key)!) {
+              for (const listener of this.#listeners.get(key)!) {
                 const r = listener(
                   name,
                   data,
@@ -324,11 +342,11 @@ export default class EventEmitterConfiguration<
                   ctx
                   /* /emit.withContext */
                 );
-                if (r instanceof EventEmitterConfiguration.Track) res.push(r.value);
+                if (r instanceof Track) res.push(r.value);
               }
             else
             /* /on.all */ 
-              for (const listener of this.listeners.get(key)!)
+              for (const listener of this.#listeners.get(key)!)
                 res.push(
                   listener(
                     data,
@@ -338,8 +356,8 @@ export default class EventEmitterConfiguration<
                   )
                 );
 
-        /* +emit.cacheFor */
-        if (cacheTime > 0) {
+        /* +emit.cacheUntil */
+        if (cacheUntil) {
           // Make reference for emitted data, this will allow for easy expiration
           const tracked = [
             name,
@@ -353,22 +371,21 @@ export default class EventEmitterConfiguration<
             this.cache.get(key)!.add(tracked);
           }
 
-          if (cacheTime !== Infinity)
-            setTimeout(() => {
-              for (const key of keys) this.cache.get(key)!.delete(tracked);
-            }, cacheTime);
+          cacheUntil.then(() => {
+            for (const key of keys) this.cache.get(key)!.delete(tracked);
+          });
         }
-        /* /emit.cacheFor */
+        /* /emit.cacheUntil */
 
         return res as Details[2][];
       },
       {
-        /* +emit.cacheFor */
-        cacheFor(ms: number) {
-          cacheTime = ms;
+        /* +emit.cacheUntil */
+        cacheUntil(promise: Promise<any>) {
+          cacheUntil = promise;
           return emit;
         },
-        /* /emit.cacheFor */
+        /* /emit.cacheUntil */
         /* +emit.withContext */
         withContext(context: Context) {
           ctx = context;
@@ -384,8 +401,8 @@ export default class EventEmitterConfiguration<
           data: () => Details[1]
         ): Details[2][] => {
           if (
-            this.listeners.has(name) /* +on.all */ ||
-            this.listeners.has(LISTEN_ALL) /* /on.all */
+            this.#listeners.has(name) /* +on.all */ ||
+            this.#listeners.has(LISTEN_ALL) /* /on.all */
           )
             return (emit as any)(name, data());
 
@@ -401,10 +418,14 @@ export default class EventEmitterConfiguration<
           E extends T[number][0],
           Details extends FilterDetailsFromName<T, E>[number]
         >(
-          event: [
-            name: E,
-            ...maybeData: Details[1] extends undefined ? [] : [data: Details[1]]
-          ]
+          event:
+            | [
+                name: E,
+                ...maybeData: Details[1] extends undefined
+                  ? []
+                  : [data: Details[1]]
+              ]
+            | Falsy
         ) {
           if (event) return emit(...event);
         },
@@ -415,25 +436,23 @@ export default class EventEmitterConfiguration<
     return emit;
   }
 
-  /* +copyWith */
-  copyWith(data: Partial<Pick<this, "listeners">>) {
+  /* +clone */
+  clone() {
     const clone = new (this.constructor as any)() as typeof this;
 
-    for (const [key, value] of this.listeners)
-      clone.listeners.set(key, new Set(value));
-    if (data.listeners)
-      for (const [key, value] of data.listeners)
-        clone.listeners.set(key, new Set(value));
+    for (const [key, value] of this.#listeners)
+      clone.#listeners.set(key, new Set(value));
 
     return clone;
   }
-  /* /copyWith */
-  /* +on.all */
-  static Track = class {
-    constructor(public value: any) {}
-  };
-  /* /on.all */
+  /* /clone */
 }
+
+/* +on.all */
+export class Track<T> {
+  constructor(public value: T) {}
+}
+/* /on.all */
 
 export type EventDetailsFromName<
   EE extends EventEmitterConfiguration,
@@ -444,3 +463,7 @@ export type EventDetailsFromName<
   EE extends EventEmitterConfiguration<infer Events> ? Events : never,
   Name
 >[number];
+
+/* +emit.if */
+type Falsy = false | 0 | "" | null | undefined;
+/* +emit.if */

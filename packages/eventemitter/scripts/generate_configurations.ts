@@ -4,9 +4,13 @@ import pkg from "../package.json" assert { type: "json" };
 
 const rootPath = new URL("../src/full.ts", import.meta.url);
 const full: string = await fs.readFile(rootPath, "utf-8");
+const fullTest: string = await fs.readFile(
+  new URL("full.test.ts", rootPath),
+  "utf-8"
+);
 
 const flagStr = full.slice(0, full.indexOf("\n"));
-const rest = full.slice(full.indexOf("\n") + 1);
+const body = full.slice(full.indexOf("\n") + 1);
 
 const flags = flagStr
   .split(" ")
@@ -18,18 +22,31 @@ const exports: Record<string, string> = {
   "./minimal": "./dist/minimal.js",
 };
 
+// Rewrite flags in alphabetical order
+await fs.writeFile(rootPath, `/* ${flags.join(" ")} */\n${body}`);
+
+const generatedPath = new URL("generated/", rootPath);
+
+await fs.rm(generatedPath, { recursive: true, force: true });
+await fs.mkdir(generatedPath);
+
 await Promise.all([
-  // Rewrite flags in alphabetical order
-  fs.writeFile(rootPath, `/* ${flags.join(" ")} */\n${rest}`),
-  // Generate minimal file
-  fs.writeFile(new URL("minimal.ts", rootPath), withFlags([])),
+  // Generate minimal
+  fs.writeFile(
+    new URL("minimal.ts", generatedPath),
+    generateWithFlags(body, [])
+  ),
+  fs.writeFile(
+    new URL("minimal.test.ts", generatedPath),
+    generateWithFlags(fullTest, []).replace("./full", "./minimal")
+  ),
   // Generate other configurations
   (async function nextCall(currentFlags: string[] = []) {
     const rest = flags.slice(flags.indexOf(currentFlags.at(-1)!) + 1);
 
     if (currentFlags.length > 0 && rest.length > 0) {
       try {
-        await fs.mkdir(new URL(currentFlags.join("/"), rootPath));
+        await fs.mkdir(new URL(currentFlags.join("/"), generatedPath));
       } catch (e) {
         // Do nothing
       }
@@ -42,9 +59,16 @@ await Promise.all([
 
       const path = next.join("/");
 
-      exports[`./${path}`] = `./dist/${path}.js`;
+      exports[`./${path}`] = `./dist/generated/${path}.js`;
       promises.push(
-        fs.writeFile(new URL(`${path}.ts`, rootPath), withFlags(next))
+        fs.writeFile(
+          new URL(`${path}.ts`, generatedPath),
+          generateWithFlags(body, next)
+        ),
+        fs.writeFile(
+          new URL(`${path}.test.ts`, generatedPath),
+          generateWithFlags(fullTest, next).replace("./full", `./${flag}`)
+        )
       );
 
       promises.push(nextCall(next));
@@ -74,8 +98,8 @@ await fs.writeFile(
   )
 );
 
-function withFlags(flags: string[]) {
-  const sections = rest.split(/(\/\* [+/][\w.]+ \*\/)/);
+function generateWithFlags(input: string, flags: string[]) {
+  const sections = input.split(/(\/\* [+/][\w.]+ \*\/)/);
 
   let body = "";
   const stack: string[] = [];
@@ -114,7 +138,7 @@ function withFlags(flags: string[]) {
   }
 
   return prettier.format(
-    `/* ${flags.join(" ")} */\n${body}`.replace(/\/\/ prettier-ignore/g, ""),
+    `/* ${flags.join(" ")} */\n${body.replace(/\/\/ prettier-ignore/g, "")}`,
     {
       parser: "typescript",
     }

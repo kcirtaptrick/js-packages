@@ -18,8 +18,8 @@ const flags = flagStr
   .sort();
 
 const exports: Record<string, string> = {
-  "./full": "./dist/full.js",
-  "./minimal": "./dist/minimal.js",
+  "./full": "full.js",
+  "./minimal": "minimal.js",
 };
 
 // Rewrite flags in alphabetical order
@@ -59,7 +59,7 @@ await Promise.all([
 
       const path = next.join("/");
 
-      exports[`./${path}`] = `./dist/generated/${path}.js`;
+      exports[`./${path}`] = `generated/${path}.js`;
       promises.push(
         fs.writeFile(
           new URL(`${path}.ts`, generatedPath),
@@ -87,8 +87,8 @@ await fs.writeFile(
           path,
           {
             // Must be first
-            types: `${file.slice(0, file.lastIndexOf("."))}.d.ts`,
-            import: file,
+            types: `./dist/types/${file.slice(0, file.lastIndexOf("."))}.d.ts`,
+            import: `./dist/${file}`,
           },
         ])
       ),

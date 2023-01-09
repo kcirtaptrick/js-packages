@@ -4,8 +4,7 @@
     "incremental": true,
     "composite": true,
     "rootDir": "./src",
-    "outDir": "./dist",
-    "declarationDir": "./dist/types"
+    "outDir": "./dist"
   },
   "references": [],
   "include": ["types.d.ts", "src/**/*.ts", "src/**/*.tsx"],

@@ -34,7 +34,11 @@
     "./minimal": {
       "import": "./dist/generated/minimal.js"
     },
+    "./utils": {
+      "import": "./dist/utils.js"
+    },
     "./*": {
+      "types": "./dist/generated/*.d.ts",
       "import": "./dist/generated/*.js"
     }
   }

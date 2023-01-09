@@ -1,6 +1,6 @@
 {
   "name": "record-tuple",
-  "version": "0.0.5",
+  "version": "0.1.0",
   "description": "Lightweight Record and Tuple data structures",
   "author": "Patrick Wang <patrick.bohan.wang@gmail.com>",
   "homepage": "https://github.com/kcirtaptrick/js-packages/tree/master/packages/record-tuple#readme",

@@ -1,5 +1,7 @@
 /* asyncIterator clone emit.if emit.withContext once */
 
+import {} from "../../../../../utils";
+
 type EventDetails = [name: any, data?: any, returnValue?: any];
 
 type FilterDetailsFromName<
@@ -24,6 +26,8 @@ type HandlerFromData<
   context?: Context
 ) => Details[2] extends undefined ? void : Details[2];
 
+const DESTROY_ALL = Symbol("EventEmitter.DESTROY_ALL");
+
 export default class EventEmitterConfiguration<
   T extends EventDetails[] = any,
   Context extends any = never
@@ -31,6 +35,8 @@ export default class EventEmitterConfiguration<
   #listeners = new Map<T[number][0], Set<(...args: any) => any>>();
 
   constructor() {
+    this.destroy = this.destroy.bind(this);
+
     this.clone = this.clone.bind(this);
   }
 
@@ -120,16 +126,21 @@ export default class EventEmitterConfiguration<
       const removed = !!this.#listeners.get(name)?.delete(handler);
 
       return {
-        and: this as EventEmitterConfiguration<T, Context>,
         removed,
+        and: this as EventEmitterConfiguration<T, Context>,
       };
     };
 
     return Object.assign(off, {});
   }
 
+  destroy(name: T[number][0] = DESTROY_ALL) {
+    if (name === DESTROY_ALL) this.#listeners.clear();
+    else this.#listeners.delete(name);
+  }
+
   get emit() {
-    let ctx: Context | null = null;
+    let ctx: Context | undefined = undefined;
 
     const emit = Object.assign(
       <
@@ -139,21 +150,26 @@ export default class EventEmitterConfiguration<
         name: E,
         ...[data]: Details[1] extends undefined ? [] : [data: Details[1]]
       ) => {
-        const keys = [name];
+        const [_name, _data, _ctx] = [name, data, ctx];
 
-        const res = [];
+        const keys = [_name];
+
+        const result: Details[2][] = [];
         for (const key of keys)
           if (this.#listeners.has(key))
             for (const listener of this.#listeners.get(key)!)
-              res.push(
+              result.push(
                 listener(
-                  data,
+                  _data,
 
-                  ctx
+                  _ctx
                 )
               );
 
-        return res as Details[2][];
+        return {
+          result,
+          and: this as EventEmitterConfiguration<T, Context>,
+        };
       },
       {
         withContext(context: Context) {

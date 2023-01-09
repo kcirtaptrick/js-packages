@@ -1,5 +1,7 @@
 /* emit.if emit.ifListening many */
 
+import {} from "../../../utils";
+
 type EventDetails = [name: any, data?: any, returnValue?: any];
 
 type FilterDetailsFromName<
@@ -19,10 +21,14 @@ type HandlerFromData<Details extends EventDetails> = (
   data: Details[1]
 ) => Details[2] extends undefined ? void : Details[2];
 
+const DESTROY_ALL = Symbol("EventEmitter.DESTROY_ALL");
+
 export default class EventEmitterConfiguration<T extends EventDetails[] = any> {
   #listeners = new Map<T[number][0], Set<(...args: any) => any>>();
 
-  constructor() {}
+  constructor() {
+    this.destroy = this.destroy.bind(this);
+  }
 
   get on() {
     type Self = EventEmitterConfiguration<T>;
@@ -88,12 +94,17 @@ export default class EventEmitterConfiguration<T extends EventDetails[] = any> {
       const removed = !!this.#listeners.get(name)?.delete(handler);
 
       return {
-        and: this as EventEmitterConfiguration<T>,
         removed,
+        and: this as EventEmitterConfiguration<T>,
       };
     };
 
     return Object.assign(off, {});
+  }
+
+  destroy(name: T[number][0] = DESTROY_ALL) {
+    if (name === DESTROY_ALL) this.#listeners.clear();
+    else this.#listeners.delete(name);
   }
 
   get emit() {
@@ -105,15 +116,20 @@ export default class EventEmitterConfiguration<T extends EventDetails[] = any> {
         name: E,
         ...[data]: Details[1] extends undefined ? [] : [data: Details[1]]
       ) => {
-        const keys = [name];
+        const [_name, _data] = [name, data];
 
-        const res = [];
+        const keys = [_name];
+
+        const result: Details[2][] = [];
         for (const key of keys)
           if (this.#listeners.has(key))
             for (const listener of this.#listeners.get(key)!)
-              res.push(listener(data));
+              result.push(listener(_data));
 
-        return res as Details[2][];
+        return {
+          result,
+          and: this as EventEmitterConfiguration<T>,
+        };
       },
       {
         ifListening: <

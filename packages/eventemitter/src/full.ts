@@ -1,4 +1,10 @@
-/* asyncIterator clone destroy emit.cacheUntil emit.if emit.ifListening emit.withContext many on.all once */
+/* asyncIterator clone emit.cacheUntil emit.if emit.ifListening emit.withContext many middleware on.all once */
+
+// prettier-ignore
+import {
+  /* +on.all */ Track, /* /on.all */
+  /* +middleware */ Abort, /* /middleware */
+} from "./utils";
 
 type EventDetails = [name: any, data?: any, returnValue?: any];
 
@@ -27,9 +33,7 @@ type HandlerFromData<
   /* /emit.withContext */
 ) => Details[2] extends undefined ? void : Details[2];
 
-/* +destroy */
 const DESTROY_ALL = Symbol("EventEmitter.DESTROY_ALL");
-/* /destroy */
 /* +on.all */
 const LISTEN_ALL = Symbol("EventEmitter.LISTEN_ALL");
 /* /on.all */
@@ -53,21 +57,100 @@ export default class EventEmitterConfiguration<
         name: T[number][0],
         data: T[number][1],
         /* +emit.withContext */
-        context: Context | null
+        context: Context | undefined
         /* /emit.withContext */
       ]
     >
   >();
   /* /emit.cacheUntil */
 
+  /* +middleware */
+  middleware = new Set<
+    Middleware<T /* +emit.withContext */, Context /* /emit.withContext */>
+  >();
+  /* /middleware */
+
   constructor() {
-    /* +destroy */
     this.destroy = this.destroy.bind(this);
-    /* /destroy */
     /* +clone */
     this.clone = this.clone.bind(this);
     /* /clone */
+    /* +middleware */
+    this.use = this.use.bind(this);
+    this.unuse = this.unuse.bind(this);
+    /* /middleware */
   }
+
+  /* +middleware */
+  use(
+    middleware: Middleware<
+      T /* +emit.withContext */,
+      Context /* /emit.withContext */
+    >
+  ) {
+    this.middleware.add(middleware);
+
+    return {
+      and: this as EventEmitterConfiguration<
+        T /* +emit.withContext */,
+        Context /* /emit.withContext */
+      >,
+      unuse: () => {
+        this.middleware.delete(middleware);
+      },
+    };
+  }
+
+  unuse(
+    middleware: Middleware<
+      T /* +emit.withContext */,
+      Context /* /emit.withContext */
+    >
+  ) {
+    const removed = this.middleware.delete(middleware);
+
+    return {
+      removed,
+      and: this as EventEmitterConfiguration<
+        T /* +emit.withContext */,
+        Context /* /emit.withContext */
+      >,
+    };
+  }
+
+  get #applyMiddleware() {
+    return ((
+      event,
+      details /* +emit.withContext */,
+      context /* /emit.withContext */
+    ) => {
+      let payload = [
+        event,
+        details,
+        /* +emit.withContext */
+        context,
+        /* /emit.withContext */
+      ] as Exclude<
+        ReturnType<
+          Middleware<T /* +emit.withContext */, Context /* /emit.withContext */>
+        >,
+        Abort
+      >;
+
+      for (const middleware of this.middleware) {
+        const result = middleware(...payload);
+        if (result instanceof Abort) return result;
+
+        payload = result;
+      }
+
+      return payload;
+    }) as Middleware<
+      T /* +emit.withContext */,
+      Context /* /emit.withContext */
+    >;
+  }
+  /* /middleware */
 
   get on() {
     type Self = EventEmitterConfiguration<
@@ -103,24 +186,30 @@ export default class EventEmitterConfiguration<
 
         /* +emit.cacheUntil */
         if (this.cache.has(name)) {
-          for (const [_name, data/* +emit.withContext */, context/* /emit.withContext */] of this.cache.get(name)!)
-          // prettier-ignore
-          /* +on.all */
-          if (name === LISTEN_ALL) (handler as any)(
+          for (const [
             _name,
             data,
             /* +emit.withContext */
-            context
+            context,
             /* /emit.withContext */
-          );
-          else 
-            /* /on.all */ 
-            (handler as any)(
+          ] of this.cache.get(name)!)
+            // prettier-ignore
+            /* +on.all */
+            if (name === LISTEN_ALL) (handler as any)(
+              _name,
               data,
               /* +emit.withContext */
               context
               /* /emit.withContext */
             );
+            else 
+            /* /on.all */ 
+              (handler as any)(
+                data,
+                /* +emit.withContext */
+                context
+                /* /emit.withContext */
+              );
         }
         /* /emit.cacheUntil */
       }
@@ -282,11 +371,11 @@ export default class EventEmitterConfiguration<
       const removed = !!this.#listeners.get(name)?.delete(handler);
 
       return {
+        removed,
         and: this as EventEmitterConfiguration<
           T /* +emit.withContext */,
           Context /* /emit.withContext */
         >,
-        removed,
       };
     };
 
@@ -298,16 +387,14 @@ export default class EventEmitterConfiguration<
     });
   }
 
-  /* +destroy */
   destroy(name: T[number][0] = DESTROY_ALL) {
     if (name === DESTROY_ALL) this.#listeners.clear();
     else this.#listeners.delete(name);
   }
-  /* /destroy */
 
   get emit() {
     /* +emit.withContext */
-    let ctx: Context | null = null;
+    let ctx: Context | undefined = undefined;
     /* /emit.withContext */
     /* +emit.cacheUntil */
     let cacheUntil: Promise<any> | null = null;
@@ -321,14 +408,38 @@ export default class EventEmitterConfiguration<
         name: E,
         ...[data]: Details[1] extends undefined ? [] : [data: Details[1]]
       ) => {
-        const keys = [
+        /* +middleware */
+        const middlwareResult = this.#applyMiddleware(
           name,
+          data /* +emit.withContext */,
+          ctx /* /emit.withContext */
+        );
+        if (middlwareResult instanceof Abort)
+          return { result: [], and: this, abortedWith: middlwareResult };
+        /* /middleware */
+
+        const [
+          _name,
+          _data,
+          /* +emit.withContext */
+          _ctx,
+          /* /emit.withContext */
+        ] = /* +middleware */ middlwareResult || /* /middleware */ [
+          name,
+          data,
+          /* +emit.withContext */
+          ctx,
+          /* /emit.withContext */
+        ];
+
+        const keys = [
+          _name,
           /* +on.all */
           LISTEN_ALL,
           /* /on.all */
         ];
 
-        const res = [];
+        const result: Details[2][] = [];
         for (const key of keys)
           // prettier-ignore
           if (this.#listeners.has(key))
@@ -336,22 +447,22 @@ export default class EventEmitterConfiguration<
             if (key === LISTEN_ALL)
               for (const listener of this.#listeners.get(key)!) {
                 const r = listener(
-                  name,
-                  data,
+                  _name,
+                  _data,
                   /* +emit.withContext */
-                  ctx
+                  _ctx
                   /* /emit.withContext */
                 );
-                if (r instanceof Track) res.push(r.value);
+                if (r instanceof Track) result.push(r.value);
               }
             else
             /* /on.all */ 
               for (const listener of this.#listeners.get(key)!)
-                res.push(
+                result.push(
                   listener(
-                    data,
+                    _data,
                     /* +emit.withContext */
-                    ctx
+                    _ctx
                     /* /emit.withContext */
                   )
                 );
@@ -360,10 +471,10 @@ export default class EventEmitterConfiguration<
         if (cacheUntil) {
           // Make reference for emitted data, this will allow for easy expiration
           const tracked = [
-            name,
-            data,
+            _name,
+            _data,
             /* +emit.withContext */
-            ctx,
+            _ctx,
             /* /emit.withContext */
           ] as const;
           for (const key of keys) {
@@ -377,7 +488,16 @@ export default class EventEmitterConfiguration<
         }
         /* /emit.cacheUntil */
 
-        return res as Details[2][];
+        return {
+          result,
+          and: this as EventEmitterConfiguration<
+            T /* +emit.withContext */,
+            Context /* /emit.withContext */
+          >,
+          /* +middleware */
+          abortedWith: null as Abort | null,
+          /* /middleware */
+        };
       },
       {
         /* +emit.cacheUntil */
@@ -448,12 +568,6 @@ export default class EventEmitterConfiguration<
   /* /clone */
 }
 
-/* +on.all */
-export class Track<T> {
-  constructor(public value: T) {}
-}
-/* /on.all */
-
 export type EventDetailsFromName<
   EE extends EventEmitterConfiguration,
   Name extends EE extends EventEmitterConfiguration<infer Events>
@@ -466,4 +580,41 @@ export type EventDetailsFromName<
 
 /* +emit.if */
 type Falsy = false | 0 | "" | null | undefined;
-/* +emit.if */
+/* /emit.if */
+
+/* +middleware */
+type Middleware<T extends EventDetails[], Context extends any = never> = (
+  event: T[number][0],
+  details: T[number][1] /* +emit.withContext */,
+  context?: Context /* /emit.withContext */
+) =>
+  | readonly [
+      T[number][0],
+      T[number][1] /* +emit.withContext */,
+      Context? /* /emit.withContext */
+    ]
+  | Abort;
+
+// WIP
+type MiddlewareResults<
+  T extends EventDetails[] /* +emit.withContext */,
+  Context extends any = never /* /emit.withContext */
+> = T extends [infer Item, ...infer Rest extends EventDetails[]]
+  ? readonly [
+      Item extends [infer Event, infer Details]
+        ? [
+            Event,
+            Details /* +emit.withContext */,
+            Context /* /emit.withContext */
+          ]
+        : Item extends [infer Event]
+        ? [
+            Event,
+            undefined,
+            /* +emit.withContext */ Context? /* /emit.withContext */
+          ]
+        : never,
+      ...MiddlewareResults<Rest>
+    ]
+  : readonly [];
+/* /middleware */

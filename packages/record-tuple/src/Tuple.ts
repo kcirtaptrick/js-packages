@@ -1,8 +1,10 @@
-type Tuple<T extends any[] = any[]> = T & { __brand: "Tuple" };
+type Tuple<T extends readonly any[] = readonly any[]> = T & {
+  __brand: "Tuple";
+};
 
 const value = Symbol("value");
 
-function Tuple<T extends any[]>(...items: T) {
+function Tuple<T extends readonly any[]>(...items: T) {
   return (function tupleFrom(index = 0, current = Tuple.cache): Tuple<T> {
     if (index === items.length) {
       if (!current.has(value)) {
@@ -21,7 +23,7 @@ function Tuple<T extends any[]>(...items: T) {
 
 Tuple.cache = new Map();
 Tuple.tuples = new Set();
-Tuple.isTuple = (maybeTuple: any[]): maybeTuple is Tuple =>
+Tuple.isTuple = (maybeTuple: readonly any[]): maybeTuple is Tuple =>
   Tuple.tuples.has(maybeTuple);
 
 export default Tuple;

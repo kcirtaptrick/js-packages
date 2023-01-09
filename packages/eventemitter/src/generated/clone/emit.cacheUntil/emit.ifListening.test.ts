@@ -1,8 +1,9 @@
 /* clone emit.cacheUntil emit.ifListening */
 import { suite } from "uvu";
 import * as assert from "uvu/assert";
-
 import EventEmitter from "./emit.ifListening";
+
+import {} from "../../../utils";
 
 const test = suite("EventEmitter");
 
@@ -91,6 +92,24 @@ test("Passes data to correct listeners", () => {
   assert.equal(handles, ["event1:data1", "event1-2:data1", "event2:data2"]);
 });
 
+test("Allows for chaining with .and", () => {
+  const events = new EventEmitter<[["event1"], ["event2"]]>();
+
+  const handles: string[] = [];
+
+  events
+    .on("event1", () => {
+      handles.push("a");
+    })
+    .and.on("event2", () => {
+      handles.push("b");
+    })
+    .and.emit("event1")
+    .and.emit("event2");
+
+  assert.equal(handles, ["a", "b"]);
+});
+
 test("Returns from handlers passed to emit in order", () => {
   const events = new EventEmitter<[["event", undefined, string]]>();
 
@@ -98,7 +117,7 @@ test("Returns from handlers passed to emit in order", () => {
   events.on("event", () => "b");
   events.on("event", () => "c");
 
-  assert.equal(events.emit("event"), ["a", "b", "c"]);
+  assert.equal(events.emit("event").result, ["a", "b", "c"]);
 });
 
 test("Removes listeners with .off", () => {
@@ -114,10 +133,61 @@ test("Removes listeners with .off", () => {
   events.emit("event");
   assert.equal(handles, ["a"]);
 
-  events.off("event", handler);
-
+  assert.ok(events.off("event", handler).removed);
   events.emit("event");
   assert.equal(handles, ["a"]);
+
+  assert.not.ok(events.off("event", handler).removed);
+
+  events
+    .on("event", () => {
+      handles.push("b");
+    })
+    .off();
+  events.emit("event");
+  assert.equal(handles, ["a"]);
+});
+
+test("destroy(name): Destroys listeners for event with .destroy", () => {
+  const events = new EventEmitter<[["event"]]>();
+
+  const handles: string[] = [];
+  events.on("event", () => {
+    handles.push("a");
+  });
+  events.on("event", () => {
+    handles.push("b");
+  });
+
+  events.emit("event");
+  assert.equal(handles, ["a", "b"]);
+
+  events.destroy("event");
+
+  events.emit("event");
+  assert.equal(handles, ["a", "b"]);
+});
+
+test("destroy(): Destroys all listeners with no arguements", () => {
+  const events = new EventEmitter<[["event1"], ["event2"]]>();
+
+  const handles: string[] = [];
+  events.on("event1", () => {
+    handles.push("a");
+  });
+  events.on("event2", () => {
+    handles.push("b");
+  });
+
+  events.emit("event1");
+  events.emit("event2");
+  assert.equal(handles, ["a", "b"]);
+
+  events.destroy();
+
+  events.emit("event1");
+  events.emit("event2");
+  assert.equal(handles, ["a", "b"]);
 });
 
 test("clone: Can immutably clone", () => {
@@ -245,6 +315,11 @@ test("emit.ifListening: Only executes data function if listener is attatched", (
   events.on("event1", (data) => {
     handles.push(data);
   });
+  emit();
+  assert.is(runs, 1);
+  assert.equal(handles, ["expensive"]);
+
+  events.destroy("event1");
   emit();
   assert.is(runs, 1);
   assert.equal(handles, ["expensive"]);

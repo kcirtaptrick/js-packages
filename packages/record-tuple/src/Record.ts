@@ -1,8 +1,8 @@
 import Tuple from "./Tuple.js";
 
-type AnyRecord = {
+type AnyRecord = Readonly<{
   [key: keyof any]: any;
-};
+}>;
 
 type Record<T extends AnyRecord = AnyRecord> = T & { __brand: "Record" };
 

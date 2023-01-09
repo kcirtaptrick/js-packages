@@ -137,8 +137,12 @@ function generateWithFlags(input: string, flags: string[]) {
     }
   }
 
+  if (stack.length > 0) throw new Error(`Unclosed tags: ${stack.join(", ")}`);
+
   return prettier.format(
-    `/* ${flags.join(" ")} */\n${body.replace(/\/\/ prettier-ignore/g, "")}`,
+    `/* ${flags.join(" ")} */\n${body
+      .replace(/\/\/ prettier-ignore/g, "")
+      .replace("./utils", `${"../".repeat(flags.length || 1)}utils`)}`,
     {
       parser: "typescript",
     }

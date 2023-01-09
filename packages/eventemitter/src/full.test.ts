@@ -1,7 +1,11 @@
 import { suite } from "uvu";
 import * as assert from "uvu/assert";
+import EventEmitter from "./full";
 // prettier-ignore
-import EventEmitter/* +on.all */, { Track }/* /on.all */ from "./full";
+import {
+  /* +on.all */ Track, /* /on.all */
+  /* +middleware */ Abort, /* /middleware */
+} from "./utils";
 
 const test = suite("EventEmitter");
 
@@ -90,6 +94,24 @@ test("Passes data to correct listeners", () => {
   assert.equal(handles, ["event1:data1", "event1-2:data1", "event2:data2"]);
 });
 
+test("Allows for chaining with .and", () => {
+  const events = new EventEmitter<[["event1"], ["event2"]]>();
+
+  const handles: string[] = [];
+
+  events
+    .on("event1", () => {
+      handles.push("a");
+    })
+    .and.on("event2", () => {
+      handles.push("b");
+    })
+    .and.emit("event1")
+    .and.emit("event2");
+
+  assert.equal(handles, ["a", "b"]);
+});
+
 test("Returns from handlers passed to emit in order", () => {
   const events = new EventEmitter<[["event", undefined, string]]>();
 
@@ -97,7 +119,7 @@ test("Returns from handlers passed to emit in order", () => {
   events.on("event", () => "b");
   events.on("event", () => "c");
 
-  assert.equal(events.emit("event"), ["a", "b", "c"]);
+  assert.equal(events.emit("event").result, ["a", "b", "c"]);
 });
 
 test("Removes listeners with .off", () => {
@@ -113,10 +135,61 @@ test("Removes listeners with .off", () => {
   events.emit("event");
   assert.equal(handles, ["a"]);
 
-  events.off("event", handler);
-
+  assert.ok(events.off("event", handler).removed);
   events.emit("event");
   assert.equal(handles, ["a"]);
+
+  assert.not.ok(events.off("event", handler).removed);
+
+  events
+    .on("event", () => {
+      handles.push("b");
+    })
+    .off();
+  events.emit("event");
+  assert.equal(handles, ["a"]);
+});
+
+test("destroy(name): Destroys listeners for event with .destroy", () => {
+  const events = new EventEmitter<[["event"]]>();
+
+  const handles: string[] = [];
+  events.on("event", () => {
+    handles.push("a");
+  });
+  events.on("event", () => {
+    handles.push("b");
+  });
+
+  events.emit("event");
+  assert.equal(handles, ["a", "b"]);
+
+  events.destroy("event");
+
+  events.emit("event");
+  assert.equal(handles, ["a", "b"]);
+});
+
+test("destroy(): Destroys all listeners with no arguements", () => {
+  const events = new EventEmitter<[["event1"], ["event2"]]>();
+
+  const handles: string[] = [];
+  events.on("event1", () => {
+    handles.push("a");
+  });
+  events.on("event2", () => {
+    handles.push("b");
+  });
+
+  events.emit("event1");
+  events.emit("event2");
+  assert.equal(handles, ["a", "b"]);
+
+  events.destroy();
+
+  events.emit("event1");
+  events.emit("event2");
+  assert.equal(handles, ["a", "b"]);
 });
 
 /* +asyncIterator */
@@ -163,13 +236,11 @@ test("Removes listeners with .off", () => {
     await wait();
     assert.equal(handles, ["a", "b", "c", "d", "e", "f", "g", "h", "i", "j"]);
 
-    /* +destroy */
     events.destroy("event");
 
     events.emit("event", "k");
     await wait();
     assert.equal(handles, ["a", "b", "c", "d", "e", "f", "g", "h", "i", "j"]);
-    /* /destroy */
   });
 
   /* +on.all */
@@ -205,13 +276,11 @@ test("Removes listeners with .off", () => {
     assert.equal(rootHandles, ["event1:a", "event2:b", "event1:c", "event2:d"]);
     assert.equal(allHandles, ["event1:a", "event2:b", "event1:c", "event2:d"]);
 
-    /* +destroy */
     events.destroy();
     events.emit("event1", "e");
     events.emit("event2", "f");
     assert.equal(rootHandles, ["event1:a", "event2:b", "event1:c", "event2:d"]);
     assert.equal(allHandles, ["event1:a", "event2:b", "event1:c", "event2:d"]);
-    /* /destroy */
   });
   /* /on.all */
 }
@@ -264,50 +333,6 @@ test("clone: Can immutably clone", () => {
   assert.equal(handles, ["a", "d", "b", "a", "c", "b"]);
 });
 /* /clone */
-
-/* +destroy */
-test("destroy(name): Destroys listeners for event with .destroy", () => {
-  const events = new EventEmitter<[["event"]]>();
-
-  const handles: string[] = [];
-  events.on("event", () => {
-    handles.push("a");
-  });
-  events.on("event", () => {
-    handles.push("b");
-  });
-
-  events.emit("event");
-  assert.equal(handles, ["a", "b"]);
-
-  events.destroy("event");
-
-  events.emit("event");
-  assert.equal(handles, ["a", "b"]);
-});
-
-test("destroy(): Destroys all listeners with no arguements", () => {
-  const events = new EventEmitter<[["event1"], ["event2"]]>();
-
-  const handles: string[] = [];
-  events.on("event1", () => {
-    handles.push("a");
-  });
-  events.on("event2", () => {
-    handles.push("b");
-  });
-
-  events.emit("event1");
-  events.emit("event2");
-  assert.equal(handles, ["a", "b"]);
-
-  events.destroy();
-
-  events.emit("event1");
-  events.emit("event2");
-  assert.equal(handles, ["a", "b"]);
-});
-/* /destroy */
 
 /* +emit.cacheUntil */
 {
@@ -413,7 +438,6 @@ test("emit.ifListening: Only executes data function if listener is attatched", (
   assert.is(runs, 1);
   assert.equal(handles, ["expensive"]);
 
-  /* +destroy */
   events.destroy("event1");
   emit();
   assert.is(runs, 1);
@@ -432,7 +456,6 @@ test("emit.ifListening: Only executes data function if listener is attatched", (
   assert.is(runs, 2);
   assert.equal(handles, ["expensive", "all:expensive"]);
   /* /on.all */
-  /* /destroy */
 });
 /* /emit.ifListening */
 
@@ -510,6 +533,95 @@ test("many.all: Handle all events a fixed number of times", () => {
 /* /on.all */
 /* /many */
 
+/* +middleware */
+test("middleware: Pipe event payload through middleware provided by .use", () => {
+  const events = new EventEmitter<
+    [["event1", { a: string }], ["event2", { b: string }]]
+  >();
+
+  const handles: string[] = [];
+
+  events.on("event1", ({ a }) => {
+    handles.push(`a:${a}`);
+  });
+  events.on("event2", ({ b }) => {
+    handles.push(`b:${b}`);
+  });
+
+  const { unuse } = events.use((event, details) => {
+    return (
+      {
+        event1: ["event2", { b: (details as any).a }],
+        event2: ["event1", { a: (details as any).b }],
+      } as const
+    )[event];
+  });
+
+  events.emit("event1", { a: "a" });
+  assert.equal(handles, ["b:a"]);
+
+  events.emit("event2", { b: "b" });
+  assert.equal(handles, ["b:a", "a:b"]);
+
+  unuse();
+
+  events.emit("event1", { a: "a" });
+  assert.equal(handles, ["b:a", "a:b", "a:a"]);
+
+  events.emit("event2", { b: "b" });
+  assert.equal(handles, ["b:a", "a:b", "a:a", "b:b"]);
+
+  events.use(() => new Abort("Test abort"));
+
+  assert.is(
+    events.emit("event1", { a: "a" }).abortedWith?.reason,
+    "Test abort"
+  );
+  assert.is(
+    events.emit("event2", { b: "b" }).abortedWith?.reason,
+    "Test abort"
+  );
+  assert.equal(handles, ["b:a", "a:b", "a:a", "b:b"]);
+});
+
+/* +emit.withContext */
+test("middleware + context", () => {
+  const events = new EventEmitter<
+    [["event1"], ["event2"]],
+    { a?: string; b?: string }
+  >();
+
+  const handles: string[] = [];
+
+  events.on("event1", (_, context) => {
+    const { a } = context!;
+
+    handles.push(`a:${a}`);
+  });
+  events.on("event2", (_, context) => {
+    const { b } = context!;
+
+    handles.push(`b:${b}`);
+  });
+
+  events.use((event, _, context) => {
+    return (
+      {
+        event1: ["event2", , { b: context!.a }],
+        event2: ["event1", , { a: context!.b }],
+      } as const
+    )[event];
+  });
+
+  events.emit.withContext({ a: "a" })("event1");
+  assert.equal(handles, ["b:a"]);
+
+  events.emit.withContext({ b: "b" })("event2");
+  assert.equal(handles, ["b:a", "a:b"]);
+});
+/* /emit.withContext */
+/* /middleware */
+
 /* +on.all */
 test("on.all: Handle all events, provide extra event-name arg", () => {
   const events = new EventEmitter<
@@ -524,10 +636,10 @@ test("on.all: Handle all events, provide extra event-name arg", () => {
     return "untracked";
   });
 
-  assert.equal(events.emit("event1", "a"), []);
+  assert.equal(events.emit("event1", "a").result, []);
   assert.equal(handles, [["event1", "a"]]);
 
-  assert.equal(events.emit("event2", "b"), []);
+  assert.equal(events.emit("event2", "b").result, []);
   assert.equal(handles, [
     ["event1", "a"],
     ["event2", "b"],
@@ -536,7 +648,7 @@ test("on.all: Handle all events, provide extra event-name arg", () => {
   events.on.all(() => {
     return new Track("returned");
   });
-  assert.equal(events.emit("event1", "a"), ["returned"]);
+  assert.equal(events.emit("event1", "a").result, ["returned"]);
 });
 /* /on.all */
 

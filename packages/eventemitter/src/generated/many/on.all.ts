@@ -1,5 +1,7 @@
 /* many on.all */
 
+import { Track } from "../../utils";
+
 type EventDetails = [name: any, data?: any, returnValue?: any];
 
 type FilterDetailsFromName<
@@ -19,6 +21,8 @@ type HandlerFromData<Details extends EventDetails> = (
   data: Details[1]
 ) => Details[2] extends undefined ? void : Details[2];
 
+const DESTROY_ALL = Symbol("EventEmitter.DESTROY_ALL");
+
 const LISTEN_ALL = Symbol("EventEmitter.LISTEN_ALL");
 
 export default class EventEmitterConfiguration<T extends EventDetails[] = any> {
@@ -27,7 +31,9 @@ export default class EventEmitterConfiguration<T extends EventDetails[] = any> {
     Set<(...args: any) => any>
   >();
 
-  constructor() {}
+  constructor() {
+    this.destroy = this.destroy.bind(this);
+  }
 
   get on() {
     type Self = EventEmitterConfiguration<T>;
@@ -113,8 +119,8 @@ export default class EventEmitterConfiguration<T extends EventDetails[] = any> {
       const removed = !!this.#listeners.get(name)?.delete(handler);
 
       return {
-        and: this as EventEmitterConfiguration<T>,
         removed,
+        and: this as EventEmitterConfiguration<T>,
       };
     };
 
@@ -122,6 +128,11 @@ export default class EventEmitterConfiguration<T extends EventDetails[] = any> {
       all: (handler: Parameters<this["on"]["all"]>[0]) =>
         off(LISTEN_ALL, handler as any),
     });
+  }
+
+  destroy(name: T[number][0] = DESTROY_ALL) {
+    if (name === DESTROY_ALL) this.#listeners.clear();
+    else this.#listeners.delete(name);
   }
 
   get emit() {
@@ -133,31 +144,32 @@ export default class EventEmitterConfiguration<T extends EventDetails[] = any> {
         name: E,
         ...[data]: Details[1] extends undefined ? [] : [data: Details[1]]
       ) => {
-        const keys = [name, LISTEN_ALL];
+        const [_name, _data] = [name, data];
 
-        const res = [];
+        const keys = [_name, LISTEN_ALL];
+
+        const result: Details[2][] = [];
         for (const key of keys)
           if (this.#listeners.has(key))
             if (key === LISTEN_ALL)
               for (const listener of this.#listeners.get(key)!) {
-                const r = listener(name, data);
-                if (r instanceof Track) res.push(r.value);
+                const r = listener(_name, _data);
+                if (r instanceof Track) result.push(r.value);
               }
             else
               for (const listener of this.#listeners.get(key)!)
-                res.push(listener(data));
+                result.push(listener(_data));
 
-        return res as Details[2][];
+        return {
+          result,
+          and: this as EventEmitterConfiguration<T>,
+        };
       },
       {}
     );
 
     return emit;
   }
-}
-
-export class Track<T> {
-  constructor(public value: T) {}
 }
 
 export type EventDetailsFromName<

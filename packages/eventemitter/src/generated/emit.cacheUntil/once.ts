@@ -1,5 +1,7 @@
 /* emit.cacheUntil once */
 
+import {} from "../../utils";
+
 type EventDetails = [name: any, data?: any, returnValue?: any];
 
 type FilterDetailsFromName<
@@ -19,6 +21,8 @@ type HandlerFromData<Details extends EventDetails> = (
   data: Details[1]
 ) => Details[2] extends undefined ? void : Details[2];
 
+const DESTROY_ALL = Symbol("EventEmitter.DESTROY_ALL");
+
 export default class EventEmitterConfiguration<T extends EventDetails[] = any> {
   #listeners = new Map<T[number][0], Set<(...args: any) => any>>();
 
@@ -27,7 +31,9 @@ export default class EventEmitterConfiguration<T extends EventDetails[] = any> {
     Set<readonly [name: T[number][0], data: T[number][1]]>
   >();
 
-  constructor() {}
+  constructor() {
+    this.destroy = this.destroy.bind(this);
+  }
 
   get on() {
     type Self = EventEmitterConfiguration<T>;
@@ -97,12 +103,17 @@ export default class EventEmitterConfiguration<T extends EventDetails[] = any> {
       const removed = !!this.#listeners.get(name)?.delete(handler);
 
       return {
-        and: this as EventEmitterConfiguration<T>,
         removed,
+        and: this as EventEmitterConfiguration<T>,
       };
     };
 
     return Object.assign(off, {});
+  }
+
+  destroy(name: T[number][0] = DESTROY_ALL) {
+    if (name === DESTROY_ALL) this.#listeners.clear();
+    else this.#listeners.delete(name);
   }
 
   get emit() {
@@ -116,17 +127,19 @@ export default class EventEmitterConfiguration<T extends EventDetails[] = any> {
         name: E,
         ...[data]: Details[1] extends undefined ? [] : [data: Details[1]]
       ) => {
-        const keys = [name];
+        const [_name, _data] = [name, data];
 
-        const res = [];
+        const keys = [_name];
+
+        const result: Details[2][] = [];
         for (const key of keys)
           if (this.#listeners.has(key))
             for (const listener of this.#listeners.get(key)!)
-              res.push(listener(data));
+              result.push(listener(_data));
 
         if (cacheUntil) {
           // Make reference for emitted data, this will allow for easy expiration
-          const tracked = [name, data] as const;
+          const tracked = [_name, _data] as const;
           for (const key of keys) {
             if (!this.cache.has(key)) this.cache.set(key, new Set());
             this.cache.get(key)!.add(tracked);
@@ -137,7 +150,10 @@ export default class EventEmitterConfiguration<T extends EventDetails[] = any> {
           });
         }
 
-        return res as Details[2][];
+        return {
+          result,
+          and: this as EventEmitterConfiguration<T>,
+        };
       },
       {
         cacheUntil(promise: Promise<any>) {

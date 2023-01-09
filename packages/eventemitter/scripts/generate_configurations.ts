@@ -17,11 +17,6 @@ const flags = flagStr
   .filter((s) => s && !s.includes("*"))
   .sort();
 
-const exports: Record<string, string> = {
-  "./full": "full",
-  "./minimal": "generated/minimal",
-};
-
 // Rewrite flags in alphabetical order
 await fs.writeFile(rootPath, `/* ${flags.join(" ")} */\n${body}`);
 
@@ -59,7 +54,6 @@ await Promise.all([
 
       const path = next.join("/");
 
-      exports[`./${path}`] = `generated/${path}`;
       promises.push(
         fs.writeFile(
           new URL(`${path}.ts`, generatedPath),
@@ -76,27 +70,6 @@ await Promise.all([
     await Promise.all(promises);
   })(),
 ]);
-
-await fs.writeFile(
-  new URL("../package.json", rootPath),
-  JSON.stringify(
-    {
-      ...pkg,
-      exports: Object.fromEntries(
-        Object.entries(exports).map(([path, file]) => [
-          path,
-          {
-            // Must be first
-            types: `./dist/${file}.d.ts`,
-            import: `./dist/${file}.js`,
-          },
-        ])
-      ),
-    },
-    null,
-    2
-  )
-);
 
 function generateWithFlags(input: string, flags: string[]) {
   const sections = input.split(/(\/\* [+/][\w.]+ \*\/)/);

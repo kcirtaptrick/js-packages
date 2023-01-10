@@ -25,6 +25,7 @@
     "generate": "ts-node-esm ./scripts/generate_configurations.ts",
     "compile": "tsc --build tsconfig.build.json && cp \"./package.json\" ./dist/",
     "test": "uvu -r tsm src .*\\.test\\.ts",
+    "test:all": "uvu -r tsm src .*\\.test\\.ts",
     "lint": "eslint \"./src/**/*.tsx?\" --max-warnings=0"
   },
   "exports": {

@@ -39,7 +39,9 @@ export default class EventEmitterConfiguration<T extends EventDetails[] = any> {
 
   get on() {
     type Self = EventEmitterConfiguration<T>;
+
     const self = this;
+
     const on = <
       E extends T[number][0],
       Details extends FilterDetailsFromName<T, E>[number]
@@ -77,7 +79,7 @@ export default class EventEmitterConfiguration<T extends EventDetails[] = any> {
               else buffer.push(value);
             });
           else
-            on(name, (data) => {
+            self.on(name, (data) => {
               if (next) next(data);
               else buffer.push(data);
             });
@@ -109,38 +111,39 @@ export default class EventEmitterConfiguration<T extends EventDetails[] = any> {
         [Symbol.asyncIterator](): AsyncIterableIterator<
           [T[number][0], T[number][1]]
         >;
-      } => on(LISTEN_ALL, handler as any),
+      } => this.on(LISTEN_ALL, handler as any),
     });
   }
 
   get once() {
-    const once = <
-      E extends T[number][0],
-      Details extends FilterDetailsFromName<T, E>[number]
-    >(
-      name: E,
-      handler: HandlerFromData<Details>
-    ) => {
-      const { off, and } = this.on(name, (...args) => {
-        off();
-
-        return handler(...args);
-      });
-
-      return { off, and };
-    };
-
-    return Object.assign(once, {
-      all: (handler: Parameters<this["on"]["all"]>[0]) => {
-        const { off, and } = this.on.all((...args) => {
+    return Object.assign(
+      <
+        E extends T[number][0],
+        Details extends FilterDetailsFromName<T, E>[number]
+      >(
+        name: E,
+        handler: HandlerFromData<Details>
+      ) => {
+        const { off, and } = this.on(name, (...args) => {
           off();
 
-          return handler?.(...args);
+          return handler(...args);
         });
 
         return { off, and };
       },
-    });
+      {
+        all: (handler: Parameters<this["on"]["all"]>[0]) => {
+          const { off, and } = this.on.all((...args) => {
+            off();
+
+            return handler?.(...args);
+          });
+
+          return { off, and };
+        },
+      }
+    );
   }
 
   get many() {
@@ -179,25 +182,26 @@ export default class EventEmitterConfiguration<T extends EventDetails[] = any> {
   }
 
   get off() {
-    const off = <
-      E extends T[number][0],
-      Details extends FilterDetailsFromName<T, E>[number]
-    >(
-      name: E,
-      handler: HandlerFromData<Details>
-    ) => {
-      const removed = !!this.#listeners.get(name)?.delete(handler);
+    return Object.assign(
+      <
+        E extends T[number][0],
+        Details extends FilterDetailsFromName<T, E>[number]
+      >(
+        name: E,
+        handler: HandlerFromData<Details>
+      ) => {
+        const removed = !!this.#listeners.get(name)?.delete(handler);
 
-      return {
-        removed,
-        and: this as EventEmitterConfiguration<T>,
-      };
-    };
-
-    return Object.assign(off, {
-      all: (handler: Parameters<this["on"]["all"]>[0]) =>
-        off(LISTEN_ALL, handler as any),
-    });
+        return {
+          removed,
+          and: this as EventEmitterConfiguration<T>,
+        };
+      },
+      {
+        all: (handler: Parameters<this["on"]["all"]>[0]) =>
+          this.off(LISTEN_ALL, handler as any),
+      }
+    );
   }
 
   destroy(name: T[number][0] = DESTROY_ALL) {
@@ -206,39 +210,42 @@ export default class EventEmitterConfiguration<T extends EventDetails[] = any> {
   }
 
   get emit() {
-    const emit = Object.assign(
-      <
-        E extends T[number][0],
-        Details extends FilterDetailsFromName<T, E>[number]
-      >(
-        name: E,
-        ...[data]: Details[1] extends undefined ? [] : [data: Details[1]]
-      ) => {
-        const [_name, _data] = [name, data];
+    const createEmitter = (options: {}) => {
+      const emit = Object.assign(
+        <
+          E extends T[number][0],
+          Details extends FilterDetailsFromName<T, E>[number]
+        >(
+          name: E,
+          ...[data]: Details[1] extends undefined ? [] : [data: Details[1]]
+        ) => {
+          const [_name, _data] = [name, data];
 
-        const keys = [_name, LISTEN_ALL];
+          const keys = [_name, LISTEN_ALL];
 
-        const result: Details[2][] = [];
-        for (const key of keys)
-          if (this.#listeners.has(key))
-            if (key === LISTEN_ALL)
-              for (const listener of this.#listeners.get(key)!) {
-                const r = listener(_name, _data);
-                if (r instanceof Track) result.push(r.value);
-              }
-            else
-              for (const listener of this.#listeners.get(key)!)
-                result.push(listener(_data));
+          const result: Details[2][] = [];
+          for (const key of keys)
+            if (this.#listeners.has(key))
+              if (key === LISTEN_ALL)
+                for (const listener of this.#listeners.get(key)!) {
+                  const r = listener(_name, _data);
+                  if (r instanceof Track) result.push(r.value);
+                }
+              else
+                for (const listener of this.#listeners.get(key)!)
+                  result.push(listener(_data));
 
-        return {
-          result,
-          and: this as EventEmitterConfiguration<T>,
-        };
-      },
-      {}
-    );
+          return {
+            result,
+            and: this as EventEmitterConfiguration<T>,
+          };
+        },
+        {}
+      );
+      return emit;
+    };
 
-    return emit;
+    return createEmitter({});
   }
 
   clone() {

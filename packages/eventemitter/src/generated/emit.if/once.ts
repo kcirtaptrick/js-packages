@@ -32,7 +32,7 @@ export default class EventEmitterConfiguration<T extends EventDetails[] = any> {
 
   get on() {
     type Self = EventEmitterConfiguration<T>;
-    const self = this;
+
     const on = <
       E extends T[number][0],
       Details extends FilterDetailsFromName<T, E>[number]
@@ -63,42 +63,44 @@ export default class EventEmitterConfiguration<T extends EventDetails[] = any> {
   }
 
   get once() {
-    const once = <
-      E extends T[number][0],
-      Details extends FilterDetailsFromName<T, E>[number]
-    >(
-      name: E,
-      handler: HandlerFromData<Details>
-    ) => {
-      const { off, and } = this.on(name, (...args) => {
-        off();
+    return Object.assign(
+      <
+        E extends T[number][0],
+        Details extends FilterDetailsFromName<T, E>[number]
+      >(
+        name: E,
+        handler: HandlerFromData<Details>
+      ) => {
+        const { off, and } = this.on(name, (...args) => {
+          off();
 
-        return handler(...args);
-      });
+          return handler(...args);
+        });
 
-      return { off, and };
-    };
-
-    return Object.assign(once, {});
+        return { off, and };
+      },
+      {}
+    );
   }
 
   get off() {
-    const off = <
-      E extends T[number][0],
-      Details extends FilterDetailsFromName<T, E>[number]
-    >(
-      name: E,
-      handler: HandlerFromData<Details>
-    ) => {
-      const removed = !!this.#listeners.get(name)?.delete(handler);
+    return Object.assign(
+      <
+        E extends T[number][0],
+        Details extends FilterDetailsFromName<T, E>[number]
+      >(
+        name: E,
+        handler: HandlerFromData<Details>
+      ) => {
+        const removed = !!this.#listeners.get(name)?.delete(handler);
 
-      return {
-        removed,
-        and: this as EventEmitterConfiguration<T>,
-      };
-    };
-
-    return Object.assign(off, {});
+        return {
+          removed,
+          and: this as EventEmitterConfiguration<T>,
+        };
+      },
+      {}
+    );
   }
 
   destroy(name: T[number][0] = DESTROY_ALL) {
@@ -107,53 +109,56 @@ export default class EventEmitterConfiguration<T extends EventDetails[] = any> {
   }
 
   get emit() {
-    const emit = Object.assign(
-      <
-        E extends T[number][0],
-        Details extends FilterDetailsFromName<T, E>[number]
-      >(
-        name: E,
-        ...[data]: Details[1] extends undefined ? [] : [data: Details[1]]
-      ) => {
-        const [_name, _data] = [name, data];
-
-        const keys = [_name];
-
-        const result: Details[2][] = [];
-        for (const key of keys)
-          if (this.#listeners.has(key))
-            for (const listener of this.#listeners.get(key)!)
-              result.push(listener(_data));
-
-        return {
-          result,
-          and: this as EventEmitterConfiguration<T>,
-        };
-      },
-      {
-        /**
-         * Too difficult to type fully, this method assumes that argument already has
-         * types enforced
-         */
-        if<
+    const createEmitter = (options: {}) => {
+      const emit = Object.assign(
+        <
           E extends T[number][0],
           Details extends FilterDetailsFromName<T, E>[number]
         >(
-          event:
-            | [
-                name: E,
-                ...maybeData: Details[1] extends undefined
-                  ? []
-                  : [data: Details[1]]
-              ]
-            | Falsy
-        ) {
-          if (event) return emit(...event);
-        },
-      }
-    );
+          name: E,
+          ...[data]: Details[1] extends undefined ? [] : [data: Details[1]]
+        ) => {
+          const [_name, _data] = [name, data];
 
-    return emit;
+          const keys = [_name];
+
+          const result: Details[2][] = [];
+          for (const key of keys)
+            if (this.#listeners.has(key))
+              for (const listener of this.#listeners.get(key)!)
+                result.push(listener(_data));
+
+          return {
+            result,
+            and: this as EventEmitterConfiguration<T>,
+          };
+        },
+        {
+          /**
+           * Too difficult to type fully, this method assumes that argument already has
+           * types enforced
+           */
+          if<
+            E extends T[number][0],
+            Details extends FilterDetailsFromName<T, E>[number]
+          >(
+            event:
+              | [
+                  name: E,
+                  ...maybeData: Details[1] extends undefined
+                    ? []
+                    : [data: Details[1]]
+                ]
+              | Falsy
+          ) {
+            if (event) return emit(...event);
+          },
+        }
+      );
+      return emit;
+    };
+
+    return createEmitter({});
   }
 }
 

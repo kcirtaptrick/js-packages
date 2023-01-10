@@ -85,7 +85,7 @@ export default class EventEmitterConfiguration<
 
   get on() {
     type Self = EventEmitterConfiguration<T, Context>;
-    const self = this;
+
     const on = <
       E extends T[number][0],
       Details extends FilterDetailsFromName<T, E>[number]
@@ -116,23 +116,24 @@ export default class EventEmitterConfiguration<
   }
 
   get once() {
-    const once = <
-      E extends T[number][0],
-      Details extends FilterDetailsFromName<T, E>[number]
-    >(
-      name: E,
-      handler: HandlerFromData<Details, Context>
-    ) => {
-      const { off, and } = this.on(name, (...args) => {
-        off();
+    return Object.assign(
+      <
+        E extends T[number][0],
+        Details extends FilterDetailsFromName<T, E>[number]
+      >(
+        name: E,
+        handler: HandlerFromData<Details, Context>
+      ) => {
+        const { off, and } = this.on(name, (...args) => {
+          off();
 
-        return handler(...args);
-      });
+          return handler(...args);
+        });
 
-      return { off, and };
-    };
-
-    return Object.assign(once, {});
+        return { off, and };
+      },
+      {}
+    );
   }
 
   get many() {
@@ -157,22 +158,23 @@ export default class EventEmitterConfiguration<
   }
 
   get off() {
-    const off = <
-      E extends T[number][0],
-      Details extends FilterDetailsFromName<T, E>[number]
-    >(
-      name: E,
-      handler: HandlerFromData<Details>
-    ) => {
-      const removed = !!this.#listeners.get(name)?.delete(handler);
+    return Object.assign(
+      <
+        E extends T[number][0],
+        Details extends FilterDetailsFromName<T, E>[number]
+      >(
+        name: E,
+        handler: HandlerFromData<Details>
+      ) => {
+        const removed = !!this.#listeners.get(name)?.delete(handler);
 
-      return {
-        removed,
-        and: this as EventEmitterConfiguration<T, Context>,
-      };
-    };
-
-    return Object.assign(off, {});
+        return {
+          removed,
+          and: this as EventEmitterConfiguration<T, Context>,
+        };
+      },
+      {}
+    );
   }
 
   destroy(name: T[number][0] = DESTROY_ALL) {
@@ -181,52 +183,60 @@ export default class EventEmitterConfiguration<
   }
 
   get emit() {
-    let ctx: Context | undefined = undefined;
+    const createEmitter = (options: { context?: Context }) => {
+      const emit = Object.assign(
+        <
+          E extends T[number][0],
+          Details extends FilterDetailsFromName<T, E>[number]
+        >(
+          name: E,
+          ...[data]: Details[1] extends undefined ? [] : [data: Details[1]]
+        ) => {
+          const middlwareResult = this.#applyMiddleware(
+            name,
+            data,
+            options.context
+          );
+          if (middlwareResult instanceof Abort)
+            return { result: [], and: this, abortedWith: middlwareResult };
 
-    const emit = Object.assign(
-      <
-        E extends T[number][0],
-        Details extends FilterDetailsFromName<T, E>[number]
-      >(
-        name: E,
-        ...[data]: Details[1] extends undefined ? [] : [data: Details[1]]
-      ) => {
-        const middlwareResult = this.#applyMiddleware(name, data, ctx);
-        if (middlwareResult instanceof Abort)
-          return { result: [], and: this, abortedWith: middlwareResult };
+          const [_name, _data, _context] = middlwareResult || [
+            name,
+            data,
 
-        const [_name, _data, _ctx] = middlwareResult || [name, data, ctx];
+            options.context,
+          ];
 
-        const keys = [_name];
+          const keys = [_name];
 
-        const result: Details[2][] = [];
-        for (const key of keys)
-          if (this.#listeners.has(key))
-            for (const listener of this.#listeners.get(key)!)
-              result.push(
-                listener(
-                  _data,
+          const result: Details[2][] = [];
+          for (const key of keys)
+            if (this.#listeners.has(key))
+              for (const listener of this.#listeners.get(key)!)
+                result.push(
+                  listener(
+                    _data,
 
-                  _ctx
-                )
-              );
+                    _context
+                  )
+                );
 
-        return {
-          result,
-          and: this as EventEmitterConfiguration<T, Context>,
+          return {
+            result,
+            and: this as EventEmitterConfiguration<T, Context>,
 
-          abortedWith: null as Abort | null,
-        };
-      },
-      {
-        withContext(context: Context) {
-          ctx = context;
-          return emit;
+            abortedWith: null as Abort | null,
+          };
         },
-      }
-    );
+        {
+          withContext: (context: Context) =>
+            createEmitter({ ...options, context }),
+        }
+      );
+      return emit;
+    };
 
-    return emit;
+    return createEmitter({});
   }
 
   clone() {

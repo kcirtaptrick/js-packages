@@ -157,7 +157,10 @@ export default class EventEmitterConfiguration<
       T /* +emit.withContext */,
       Context /* /emit.withContext */
     >;
+    /* +asyncIterator */
     const self = this;
+    /* /asyncIterator */
+
     const on = <
       E extends T[number][0],
       Details extends FilterDetailsFromName<T, E>[number]
@@ -235,7 +238,7 @@ export default class EventEmitterConfiguration<
           // prettier-ignore
           else
           /* /on.all */ 
-            on(name, (data) => {
+            self.on(name, (data) => {
               if (next) next(data);
               else buffer.push(data);
             });
@@ -272,45 +275,46 @@ export default class EventEmitterConfiguration<
         [Symbol.asyncIterator](): AsyncIterableIterator<
           [T[number][0], T[number][1]]
         >;
-      } /* /asyncIterator */ => on(LISTEN_ALL, handler as any),
+      } /* /asyncIterator */ => this.on(LISTEN_ALL, handler as any),
       /* /on.all */
     });
   }
 
   /* +once */
   get once() {
-    const once = <
-      E extends T[number][0],
-      Details extends FilterDetailsFromName<T, E>[number]
-    >(
-      name: E,
-      handler: HandlerFromData<
-        Details /* +emit.withContext */,
-        Context /* /emit.withContext */
-      >
-    ) => {
-      const { off, and } = this.on(name, (...args) => {
-        off();
-
-        return handler(...args);
-      });
-
-      return { off, and };
-    };
-
-    return Object.assign(once, {
-      /* +on.all */
-      all: (handler: Parameters<this["on"]["all"]>[0]) => {
-        const { off, and } = this.on.all((...args) => {
+    return Object.assign(
+      <
+        E extends T[number][0],
+        Details extends FilterDetailsFromName<T, E>[number]
+      >(
+        name: E,
+        handler: HandlerFromData<
+          Details /* +emit.withContext */,
+          Context /* /emit.withContext */
+        >
+      ) => {
+        const { off, and } = this.on(name, (...args) => {
           off();
 
-          return handler?.(...args);
+          return handler(...args);
         });
 
         return { off, and };
       },
-      /* /on.all */
-    });
+      {
+        /* +on.all */
+        all: (handler: Parameters<this["on"]["all"]>[0]) => {
+          const { off, and } = this.on.all((...args) => {
+            off();
+
+            return handler?.(...args);
+          });
+
+          return { off, and };
+        },
+        /* /on.all */
+      }
+    );
   }
   /* /once */
 
@@ -361,30 +365,31 @@ export default class EventEmitterConfiguration<
   /* /asyncIterator */
 
   get off() {
-    const off = <
-      E extends T[number][0],
-      Details extends FilterDetailsFromName<T, E>[number]
-    >(
-      name: E,
-      handler: HandlerFromData<Details>
-    ) => {
-      const removed = !!this.#listeners.get(name)?.delete(handler);
+    return Object.assign(
+      <
+        E extends T[number][0],
+        Details extends FilterDetailsFromName<T, E>[number]
+      >(
+        name: E,
+        handler: HandlerFromData<Details>
+      ) => {
+        const removed = !!this.#listeners.get(name)?.delete(handler);
 
-      return {
-        removed,
-        and: this as EventEmitterConfiguration<
-          T /* +emit.withContext */,
-          Context /* /emit.withContext */
-        >,
-      };
-    };
-
-    return Object.assign(off, {
-      /* +on.all */
-      all: (handler: Parameters<this["on"]["all"]>[0]) =>
-        off(LISTEN_ALL, handler as any),
-      /* /on.all */
-    });
+        return {
+          removed,
+          and: this as EventEmitterConfiguration<
+            T /* +emit.withContext */,
+            Context /* /emit.withContext */
+          >,
+        };
+      },
+      {
+        /* +on.all */
+        all: (handler: Parameters<this["on"]["all"]>[0]) =>
+          this.off(LISTEN_ALL, handler as any),
+        /* /on.all */
+      }
+    );
   }
 
   destroy(name: T[number][0] = DESTROY_ALL) {
@@ -393,54 +398,55 @@ export default class EventEmitterConfiguration<
   }
 
   get emit() {
-    /* +emit.withContext */
-    let ctx: Context | undefined = undefined;
-    /* /emit.withContext */
-    /* +emit.cacheUntil */
-    let cacheUntil: Promise<any> | null = null;
-    /* /emit.cacheUntil */
+    const createEmitter = (options: {
+      /* +emit.withContext */
+      context?: Context;
+      /* /emit.withContext */
+      /* +emit.cacheUntil */
+      cacheUntil?: Promise<any>;
+      /* /emit.cacheUntil */
+    }) => {
+      const emit = Object.assign(
+        <
+          E extends T[number][0],
+          Details extends FilterDetailsFromName<T, E>[number]
+        >(
+          name: E,
+          ...[data]: Details[1] extends undefined ? [] : [data: Details[1]]
+        ) => {
+          /* +middleware */
+          const middlwareResult = this.#applyMiddleware(
+            name,
+            data /* +emit.withContext */,
+            options.context /* /emit.withContext */
+          );
+          if (middlwareResult instanceof Abort)
+            return { result: [], and: this, abortedWith: middlwareResult };
+          /* /middleware */
 
-    const emit = Object.assign(
-      <
-        E extends T[number][0],
-        Details extends FilterDetailsFromName<T, E>[number]
-      >(
-        name: E,
-        ...[data]: Details[1] extends undefined ? [] : [data: Details[1]]
-      ) => {
-        /* +middleware */
-        const middlwareResult = this.#applyMiddleware(
-          name,
-          data /* +emit.withContext */,
-          ctx /* /emit.withContext */
-        );
-        if (middlwareResult instanceof Abort)
-          return { result: [], and: this, abortedWith: middlwareResult };
-        /* /middleware */
+          const [
+            _name,
+            _data,
+            /* +emit.withContext */
+            _context,
+            /* /emit.withContext */
+          ] = /* +middleware */ middlwareResult || /* /middleware */ [
+            name,
+            data,
+            /* +emit.withContext */
+            options.context,
+            /* /emit.withContext */
+          ];
 
-        const [
-          _name,
-          _data,
-          /* +emit.withContext */
-          _ctx,
-          /* /emit.withContext */
-        ] = /* +middleware */ middlwareResult || /* /middleware */ [
-          name,
-          data,
-          /* +emit.withContext */
-          ctx,
-          /* /emit.withContext */
-        ];
+          const keys = [
+            _name,
+            /* +on.all */
+            LISTEN_ALL,
+            /* /on.all */
+          ];
 
-        const keys = [
-          _name,
-          /* +on.all */
-          LISTEN_ALL,
-          /* /on.all */
-        ];
-
-        const result: Details[2][] = [];
-        for (const key of keys)
+          const result: Details[2][] = [];
+          for (const key of keys)
           // prettier-ignore
           if (this.#listeners.has(key))
             /* +on.all */
@@ -450,7 +456,7 @@ export default class EventEmitterConfiguration<
                   _name,
                   _data,
                   /* +emit.withContext */
-                  _ctx
+                  _context
                   /* /emit.withContext */
                 );
                 if (r instanceof Track) result.push(r.value);
@@ -462,98 +468,96 @@ export default class EventEmitterConfiguration<
                   listener(
                     _data,
                     /* +emit.withContext */
-                    _ctx
+                    _context
                     /* /emit.withContext */
                   )
                 );
 
-        /* +emit.cacheUntil */
-        if (cacheUntil) {
-          // Make reference for emitted data, this will allow for easy expiration
-          const tracked = [
-            _name,
-            _data,
-            /* +emit.withContext */
-            _ctx,
-            /* /emit.withContext */
-          ] as const;
-          for (const key of keys) {
-            if (!this.cache.has(key)) this.cache.set(key, new Set());
-            this.cache.get(key)!.add(tracked);
+          /* +emit.cacheUntil */
+          if (options.cacheUntil) {
+            // Make reference for emitted data, this will allow for easy expiration
+            const tracked = [
+              _name,
+              _data,
+              /* +emit.withContext */
+              _context,
+              /* /emit.withContext */
+            ] as const;
+            for (const key of keys) {
+              if (!this.cache.has(key)) this.cache.set(key, new Set());
+              this.cache.get(key)!.add(tracked);
+            }
+
+            options.cacheUntil.then(() => {
+              for (const key of keys) this.cache.get(key)!.delete(tracked);
+            });
           }
+          /* /emit.cacheUntil */
 
-          cacheUntil.then(() => {
-            for (const key of keys) this.cache.get(key)!.delete(tracked);
-          });
+          return {
+            result,
+            and: this as EventEmitterConfiguration<
+              T /* +emit.withContext */,
+              Context /* /emit.withContext */
+            >,
+            /* +middleware */
+            abortedWith: null as Abort | null,
+            /* /middleware */
+          };
+        },
+        {
+          /* +emit.cacheUntil */
+          cacheUntil: (promise: Promise<any>) =>
+            createEmitter({ ...options, cacheUntil: promise }),
+          /* /emit.cacheUntil */
+          /* +emit.withContext */
+          withContext: (context: Context) =>
+            createEmitter({ ...options, context }),
+          /* /emit.withContext */
+          /* +emit.ifListening */
+          ifListening: <
+            E extends T[number][0],
+            Details extends FilterDetailsFromName<T, E>[number]
+          >(
+            name: E,
+            data: () => Details[1]
+          ): Details[2][] => {
+            if (
+              this.#listeners.has(name) /* +on.all */ ||
+              this.#listeners.has(LISTEN_ALL) /* /on.all */
+            )
+              return (emit as any)(name, data());
+
+            return [];
+          },
+          /* /emit.ifListening */
+          /* +emit.if */
+          /**
+           * Too difficult to type fully, this method assumes that argument already has
+           * types enforced
+           */
+          if<
+            E extends T[number][0],
+            Details extends FilterDetailsFromName<T, E>[number]
+          >(
+            event:
+              | [
+                  name: E,
+                  ...maybeData: Details[1] extends undefined
+                    ? []
+                    : [data: Details[1]]
+                ]
+              | Falsy
+          ) {
+            if (event) return emit(...event);
+          },
+          /* /emit.if */
         }
-        /* /emit.cacheUntil */
+      );
+      return emit;
+    };
 
-        return {
-          result,
-          and: this as EventEmitterConfiguration<
-            T /* +emit.withContext */,
-            Context /* /emit.withContext */
-          >,
-          /* +middleware */
-          abortedWith: null as Abort | null,
-          /* /middleware */
-        };
-      },
-      {
-        /* +emit.cacheUntil */
-        cacheUntil(promise: Promise<any>) {
-          cacheUntil = promise;
-          return emit;
-        },
-        /* /emit.cacheUntil */
-        /* +emit.withContext */
-        withContext(context: Context) {
-          ctx = context;
-          return emit;
-        },
-        /* /emit.withContext */
-        /* +emit.ifListening */
-        ifListening: <
-          E extends T[number][0],
-          Details extends FilterDetailsFromName<T, E>[number]
-        >(
-          name: E,
-          data: () => Details[1]
-        ): Details[2][] => {
-          if (
-            this.#listeners.has(name) /* +on.all */ ||
-            this.#listeners.has(LISTEN_ALL) /* /on.all */
-          )
-            return (emit as any)(name, data());
-
-          return [];
-        },
-        /* /emit.ifListening */
-        /* +emit.if */
-        /**
-         * Too difficult to type fully, this method assumes that argument already has
-         * types enforced
-         */
-        if<
-          E extends T[number][0],
-          Details extends FilterDetailsFromName<T, E>[number]
-        >(
-          event:
-            | [
-                name: E,
-                ...maybeData: Details[1] extends undefined
-                  ? []
-                  : [data: Details[1]]
-              ]
-            | Falsy
-        ) {
-          if (event) return emit(...event);
-        },
-        /* /emit.if */
-      }
-    );
-
-    return emit;
+    return createEmitter({});
   }
 
   /* +clone */

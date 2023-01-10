@@ -54,7 +54,7 @@ export default class EventEmitterConfiguration<
 
   get on() {
     type Self = EventEmitterConfiguration<T, Context>;
-    const self = this;
+
     const on = <
       E extends T[number][0],
       Details extends FilterDetailsFromName<T, E>[number]
@@ -94,22 +94,23 @@ export default class EventEmitterConfiguration<
   }
 
   get off() {
-    const off = <
-      E extends T[number][0],
-      Details extends FilterDetailsFromName<T, E>[number]
-    >(
-      name: E,
-      handler: HandlerFromData<Details>
-    ) => {
-      const removed = !!this.#listeners.get(name)?.delete(handler);
+    return Object.assign(
+      <
+        E extends T[number][0],
+        Details extends FilterDetailsFromName<T, E>[number]
+      >(
+        name: E,
+        handler: HandlerFromData<Details>
+      ) => {
+        const removed = !!this.#listeners.get(name)?.delete(handler);
 
-      return {
-        removed,
-        and: this as EventEmitterConfiguration<T, Context>,
-      };
-    };
-
-    return Object.assign(off, {});
+        return {
+          removed,
+          and: this as EventEmitterConfiguration<T, Context>,
+        };
+      },
+      {}
+    );
   }
 
   destroy(name: T[number][0] = DESTROY_ALL) {
@@ -118,86 +119,85 @@ export default class EventEmitterConfiguration<
   }
 
   get emit() {
-    let ctx: Context | undefined = undefined;
+    const createEmitter = (options: {
+      context?: Context;
 
-    let cacheUntil: Promise<any> | null = null;
-
-    const emit = Object.assign(
-      <
-        E extends T[number][0],
-        Details extends FilterDetailsFromName<T, E>[number]
-      >(
-        name: E,
-        ...[data]: Details[1] extends undefined ? [] : [data: Details[1]]
-      ) => {
-        const [_name, _data, _ctx] = [name, data, ctx];
-
-        const keys = [_name];
-
-        const result: Details[2][] = [];
-        for (const key of keys)
-          if (this.#listeners.has(key))
-            for (const listener of this.#listeners.get(key)!)
-              result.push(
-                listener(
-                  _data,
-
-                  _ctx
-                )
-              );
-
-        if (cacheUntil) {
-          // Make reference for emitted data, this will allow for easy expiration
-          const tracked = [_name, _data, _ctx] as const;
-          for (const key of keys) {
-            if (!this.cache.has(key)) this.cache.set(key, new Set());
-            this.cache.get(key)!.add(tracked);
-          }
-
-          cacheUntil.then(() => {
-            for (const key of keys) this.cache.get(key)!.delete(tracked);
-          });
-        }
-
-        return {
-          result,
-          and: this as EventEmitterConfiguration<T, Context>,
-        };
-      },
-      {
-        cacheUntil(promise: Promise<any>) {
-          cacheUntil = promise;
-          return emit;
-        },
-
-        withContext(context: Context) {
-          ctx = context;
-          return emit;
-        },
-
-        /**
-         * Too difficult to type fully, this method assumes that argument already has
-         * types enforced
-         */
-        if<
+      cacheUntil?: Promise<any>;
+    }) => {
+      const emit = Object.assign(
+        <
           E extends T[number][0],
           Details extends FilterDetailsFromName<T, E>[number]
         >(
-          event:
-            | [
-                name: E,
-                ...maybeData: Details[1] extends undefined
-                  ? []
-                  : [data: Details[1]]
-              ]
-            | Falsy
-        ) {
-          if (event) return emit(...event);
-        },
-      }
-    );
+          name: E,
+          ...[data]: Details[1] extends undefined ? [] : [data: Details[1]]
+        ) => {
+          const [_name, _data, _context] = [name, data, options.context];
 
-    return emit;
+          const keys = [_name];
+
+          const result: Details[2][] = [];
+          for (const key of keys)
+            if (this.#listeners.has(key))
+              for (const listener of this.#listeners.get(key)!)
+                result.push(
+                  listener(
+                    _data,
+
+                    _context
+                  )
+                );
+
+          if (options.cacheUntil) {
+            // Make reference for emitted data, this will allow for easy expiration
+            const tracked = [_name, _data, _context] as const;
+            for (const key of keys) {
+              if (!this.cache.has(key)) this.cache.set(key, new Set());
+              this.cache.get(key)!.add(tracked);
+            }
+
+            options.cacheUntil.then(() => {
+              for (const key of keys) this.cache.get(key)!.delete(tracked);
+            });
+          }
+
+          return {
+            result,
+            and: this as EventEmitterConfiguration<T, Context>,
+          };
+        },
+        {
+          cacheUntil: (promise: Promise<any>) =>
+            createEmitter({ ...options, cacheUntil: promise }),
+
+          withContext: (context: Context) =>
+            createEmitter({ ...options, context }),
+
+          /**
+           * Too difficult to type fully, this method assumes that argument already has
+           * types enforced
+           */
+          if<
+            E extends T[number][0],
+            Details extends FilterDetailsFromName<T, E>[number]
+          >(
+            event:
+              | [
+                  name: E,
+                  ...maybeData: Details[1] extends undefined
+                    ? []
+                    : [data: Details[1]]
+                ]
+              | Falsy
+          ) {
+            if (event) return emit(...event);
+          },
+        }
+      );
+      return emit;
+    };
+
+    return createEmitter({});
   }
 
   clone() {

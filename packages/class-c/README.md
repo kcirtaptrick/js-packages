@@ -60,12 +60,25 @@ c(styles)`a b`.c`a b`; // => "scoped-a scoped-b a b"
 
 ### Conditionals
 
-Falsey values will be omitted, condition-by-class mapping is also supported
+Falsey values will be omitted, condition-by-class mapping is also supported. This can be useful with object shorthand. This also supports function conditions.
 
 ```ts
 c`a ${condition && b}`; // => condition ? "a b" : "a"
 
 c`a ${{ b: false, c: true }}`; // => "a c"
+
+const focused = true;
+const highlighted = false;
+const open = true;
+
+c`${{ focused, highlighted, open }}`; // => "focused open"
+
+// Function conditions
+const focused = () => true;
+const highlighted = () => false;
+const open = () => true;
+
+c`${{ focused, highlighted, open }}`; // => "focused open"
 ```
 
 ### CSS Modules

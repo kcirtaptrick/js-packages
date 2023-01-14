@@ -78,7 +78,9 @@ const classNameFromTemplate =
               if (typeof value === "object")
                 return Object.entries(value)
                   .flatMap(([className, condition]) =>
-                    condition ? className : []
+                    (typeof condition === "function" ? condition() : condition)
+                      ? className
+                      : []
                   )
                   .join(" ");
 

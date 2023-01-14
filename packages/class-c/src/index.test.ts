@@ -66,6 +66,14 @@ test("Conditionals", () => {
   );
 });
 
+test("Function conditionals", () => {
+  const focused = () => true;
+  const highlighted = () => false;
+  const open = () => true;
+
+  matches(c`${{ focused, highlighted, open }}`, "focused open");
+});
+
 test("Conditional map", () => {
   matches(c`${{}}`, "");
   matches(c`${{ a: true }}`, "a");

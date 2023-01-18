@@ -7,18 +7,16 @@
   ],
   "scripts": {
     "prepare": "./scripts/configure-references",
-    "build": "lerna run build --stream",
-    "lint": "lerna run lint --stream --parallel",
-    "c": "yarn workspace class-c",
-    "rt": "yarn workspace record-tuple",
-    "ee": "yarn workspace configurable-eventemitter"
+    "c": "pnpm --filter class-c",
+    "rt": "pnpm --filter record-tuple",
+    "ee": "pnpm --filter configurable-eventemitter"
   },
   "devDependencies": {
+    "@changesets/cli": "^2.26.0",
     "@types/fs-extra": "^9.0.13",
     "@types/node": "^18.11.18",
     "@types/prettier": "^2.7.2",
     "fs-extra": "^11.1.0",
-    "lerna": "^4.0.0",
     "prettier": "^2.8.0",
     "ts-node": "^10.9.1",
     "tsd": "^0.20.0",

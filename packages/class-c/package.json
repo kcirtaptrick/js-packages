@@ -3,7 +3,7 @@
   "version": "0.0.7",
   "description": "className helper",
   "author": "Patrick Wang <patrick.bohan.wang@gmail.com>",
-  "homepage": "https://github.com/kcirtaptrick/js-packages/tree/master/packages/c-class#readme",
+  "homepage": "https://github.com/kcirtaptrick/js-packages/tree/master/packages/class-c#readme",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "license": "MIT",

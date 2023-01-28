@@ -55,7 +55,7 @@ test("Ignores property ordering", () => {
 
 test("Creates frozen objects", () => {
   assert.ok(Object.isFrozen(Record({ a: "a", b: "b" })));
-  assert.ok(Object.isFrozen(Record({ a: Record({ a: "a", b: "b" }) })[0]));
+  assert.ok(Object.isFrozen(Record({ a: Record({ a: "a", b: "b" }) }).a));
 });
 
 test("Works with tuples", () => {

@@ -1,4 +1,6 @@
-type Tuple<T extends readonly any[] = readonly any[]> = T & {
+export type Tupleable = readonly any[];
+
+type Tuple<T extends Tupleable = Tupleable> = T & {
   __brand: "Tuple";
 };
 
@@ -34,7 +36,7 @@ const createCache = () =>
     generation: 0,
   }) as Cache;
 
-function Tuple<T extends readonly any[]>(...items: T) {
+function Tuple<T extends Tupleable>(...items: T) {
   return (function tupleFrom(index = 0, current = Tuple.cache): Tuple<T> {
     if (index === items.length) {
       let { value } = current;

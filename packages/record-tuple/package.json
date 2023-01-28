@@ -23,5 +23,8 @@
     "test": "uvu -r tsm src .*\\.test\\.ts",
     "lint": "eslint \"./src/**/*.tsx?\" --max-warnings=0"
   },
-  "gitHead": "9cb8a448a9a7bf44e224a86c7fb6a370b87e46dc"
+  "gitHead": "9cb8a448a9a7bf44e224a86c7fb6a370b87e46dc",
+  "devDependencies": {
+    "typescript": "^4.9.4"
+  }
 }

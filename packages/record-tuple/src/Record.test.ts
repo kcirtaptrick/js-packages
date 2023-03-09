@@ -1,7 +1,12 @@
 import { suite } from "uvu";
 import * as assert from "uvu/assert";
-import Record from "./Record";
-import Tuple from "./Tuple";
+import Record from "./Record.js";
+import Tuple from "./Tuple.js";
+import { setFlagsFromString } from "v8";
+import { runInNewContext } from "vm";
+
+setFlagsFromString("--expose_gc");
+const gc = runInNewContext("gc");
 
 const test = suite("Record");
 
@@ -41,6 +46,13 @@ test("Provides nested structural equality", () => {
   );
 });
 
+test("Ignores property ordering", () => {
+  assert.is(
+    Record({ a: Record({ a: "a", b: "b" }), b: 1 }),
+    Record({ a: Record({ b: "b", a: "a" }), b: 1 })
+  );
+});
+
 test("Creates frozen objects", () => {
   assert.ok(Object.isFrozen(Record({ a: "a", b: "b" })));
   assert.ok(Object.isFrozen(Record({ a: Record({ a: "a", b: "b" }) })[0]));
@@ -49,6 +61,18 @@ test("Creates frozen objects", () => {
 test("Works with tuples", () => {
   assert.is(Record({ a: Tuple(1, 2, 3) }), Record({ a: Tuple(1, 2, 3) }));
   assert.is(Record({ a: Tuple(1, 2, 3) }), Record({ a: Tuple(1, 2, 3) }));
+});
+
+test("Does not hold references", async () => {
+  const ref = new WeakRef(Record({ prop: Symbol() }));
+  assert.ok(ref.deref() != null);
+
+  // Schedule macrotask for gc
+  await new Promise((resolve) => setTimeout(resolve));
+
+  gc();
+
+  assert.ok(ref.deref() == null);
 });
 
 test.run();

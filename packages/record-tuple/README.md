@@ -17,6 +17,9 @@ import { Tuple, Record } from "record-tuple";
 Tuple(1, 2, 3) === Tuple(1, 2, 3); // true
 Record({ a: "a", b: "b" }) === Record({ a: "a", b: "b" }); // true
 
+// Records ignore property order
+Record({ a: "a", b: "b" }) === Record({ b: "b", a: "a" }); // true
+
 // As Map/Set keys
 const map = new Map();
 

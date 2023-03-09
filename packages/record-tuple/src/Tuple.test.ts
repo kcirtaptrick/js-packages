@@ -1,7 +1,12 @@
 import { suite } from "uvu";
 import * as assert from "uvu/assert";
-import Record from "./Record";
-import Tuple from "./Tuple";
+import Record from "./Record.js";
+import Tuple from "./Tuple.js";
+import { setFlagsFromString } from "v8";
+import { runInNewContext } from "vm";
+
+setFlagsFromString("--expose_gc");
+const gc = runInNewContext("gc");
 
 const test = suite("Tuple");
 
@@ -54,6 +59,17 @@ test("Works with Records", () => {
     Tuple(1, Record({ a: "a", b: "b" }), 2),
     Tuple(1, Record({ a: "a", b: "b" }), 2)
   );
+});
+
+test("Does not hold references", async () => {
+  const ref = new WeakRef(Tuple(Symbol()));
+  assert.ok(ref.deref() != null);
+
+  await new Promise((resolve) => setTimeout(resolve));
+
+  gc();
+
+  assert.ok(ref.deref() == null);
 });
 
 test.run();

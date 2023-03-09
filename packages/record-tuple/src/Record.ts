@@ -1,4 +1,4 @@
-import Tuple from "./Tuple.js";
+import Tuple, { supportsWeak } from "./Tuple.js";
 
 type AnyRecord = Readonly<{
   [key: keyof any]: any;
@@ -7,10 +7,15 @@ type AnyRecord = Readonly<{
 type Record<T extends AnyRecord = AnyRecord> = T & { __brand: "Record" };
 
 function Record<T extends AnyRecord>(obj: T) {
-  const tuple = Tuple(...Object.entries(obj).map((entry) => Tuple(...entry)));
+  const tuple = Tuple(
+    ...Object.entries(obj)
+      .sort(([a], [b]) => a.localeCompare(b))
+      .map((entry) => Tuple(...entry))
+  );
 
   if (!Record.cache.has(tuple)) {
     const record = Object.freeze({ ...obj });
+
     Record.cache.set(tuple, record);
     Record.cache.set(record, tuple);
   }
@@ -18,7 +23,7 @@ function Record<T extends AnyRecord>(obj: T) {
   return Record.cache.get(tuple);
 }
 
-Record.cache = new Map();
+Record.cache = supportsWeak ? new WeakMap() : new Map();
 Record.isRecord = (maybeRecord: any): maybeRecord is Record =>
   Record.cache.has(maybeRecord) && !Tuple.isTuple(maybeRecord);
 

@@ -19,7 +19,7 @@
     "clean": "rimraf dist && rimraf tsconfig.tsbuildinfo",
     "prepack": "yarn build",
     "build": "yarn clean && yarn compile",
-    "compile": "tsc --build && cp \"./package.json\" ./dist/",
+    "compile": "tsc --build tsconfig.build.json  && cp \"./package.json\" ./dist/",
     "test": "uvu -r tsm src .*\\.test\\.ts",
     "lint": "eslint \"./src/**/*.tsx?\" --max-warnings=0"
   },

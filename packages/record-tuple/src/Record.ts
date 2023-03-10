@@ -1,12 +1,12 @@
 import Tuple, { supportsWeak } from "./Tuple.js";
 
-type AnyRecord = Readonly<{
+export type Recordable = Readonly<{
   [key: keyof any]: any;
 }>;
 
-type Record<T extends AnyRecord = AnyRecord> = T & { __brand: "Record" };
+type Record<T extends Recordable = Recordable> = T & { __brand: "Record" };
 
-function Record<T extends AnyRecord>(obj: T) {
+function Record<T extends Recordable>(obj: T) {
   const tuple = Tuple(
     ...Object.entries(obj)
       .sort(([a], [b]) => a.localeCompare(b))

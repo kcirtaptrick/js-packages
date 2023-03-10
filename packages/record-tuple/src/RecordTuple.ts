@@ -1,5 +1,5 @@
-import Record, { Recordable } from "./Record";
-import Tuple, { Tupleable } from "./Tuple";
+import Record, { Recordable } from "./Record.js";
+import Tuple, { Tupleable } from "./Tuple.js";
 
 namespace RecordTuple {
   export type Input = Recordable | Tupleable;

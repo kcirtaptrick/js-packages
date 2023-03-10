@@ -1,5 +1,11 @@
 # record-tuple
 
+## 1.0.1
+
+### Patch Changes
+
+- Fix imports
+
 ## 1.0.0
 
 ### Major Changes

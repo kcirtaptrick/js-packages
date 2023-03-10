@@ -1,6 +1,6 @@
 {
   "name": "record-tuple",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "description": "Lightweight Record and Tuple data structures",
   "author": "Patrick Wang <patrick.bohan.wang@gmail.com>",
   "homepage": "https://github.com/kcirtaptrick/js-packages/tree/master/packages/record-tuple#readme",
@@ -16,7 +16,7 @@
     "url": "https://github.com/kcirtaptrick/js-packages/issues"
   },
   "scripts": {
-    "clean": "rimraf dist && rimraf tsconfig.tsbuildinfo",
+    "clean": "rimraf dist && rimraf tsconfig.build.tsbuildinfo",
     "prepack": "yarn build",
     "build": "yarn clean && yarn compile",
     "compile": "tsc --build tsconfig.build.json  && cp \"./package.json\" ./dist/",

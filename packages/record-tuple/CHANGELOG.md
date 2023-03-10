@@ -1,5 +1,11 @@
 # record-tuple
 
+## 1.0.2
+
+### Patch Changes
+
+- Fix generation logic
+
 ## 1.0.1
 
 ### Patch Changes

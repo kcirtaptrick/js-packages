@@ -11,7 +11,7 @@ const finalizer =
   new FinalizationRegistry<{ tuple: any[]; generation: number }>(
     ({ tuple, generation }) => {
       (function cleanup(cache = Tuple.cache, path = tuple) {
-        if (path.length === 0 && generation !== cache.generation)
+        if (path.length === 0 && generation === cache.generation)
           return (cache.value = null);
 
         const key = path.shift();

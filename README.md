@@ -1,4 +1,4 @@
 # JS packages
 
-- [`c-class`](/packages/c-class/README.md)
+- [`class-c`](/packages/class-c/README.md)
 - [`record-tuple`](/packages/record-tuple/README.md)

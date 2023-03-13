@@ -27,7 +27,7 @@ namespace RecordTuple {
 
 function RecordTuple<T extends RecordTuple.Input>(input: T) {
   return (
-    Array.isArray(input) ? Tuple(...input) : Record(input)
+    Array.isArray(input) ? Tuple.from(input) : Record(input)
   ) as RecordTuple.Result<T>;
 }
 
@@ -38,20 +38,18 @@ RecordTuple.deep = <T extends RecordTuple.Input>(
     throw new Error(`RecordTuple.deep: Invalid input ${input}`);
 
   if (Array.isArray(input))
-    return Tuple(
-      ...input.map(
+    return Tuple.from(
+      input.map(
         (item) =>
           item && (typeof item === "object" ? RecordTuple.deep(item) : item)
       )
     ) as any;
 
-  return Record(
-    Object.fromEntries(
-      Object.entries(input).map(([k, v]) => [
-        k,
-        v && (typeof v === "object" ? RecordTuple.deep(v) : v),
-      ])
-    )
+  return Record.fromEntries(
+    Object.entries(input).map(([k, v]) => [
+      k,
+      v && (typeof v === "object" ? RecordTuple.deep(v) : v),
+    ])
   ) as any;
 };
 

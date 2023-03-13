@@ -19,7 +19,9 @@ test("Creates tuple as array", () => {
 
 test("Provides structural equality with primitive elements", () => {
   assert.is(Tuple(), Tuple());
+  assert.is(Tuple.from([]), Tuple());
   assert.is(Tuple(1, 2, 3), Tuple(1, 2, 3));
+  assert.is(Tuple.from([1, 2, 3]), Tuple(1, 2, 3));
   assert.is.not(Tuple(1, 2, 3), Tuple(1, 2));
   assert.is.not(Tuple(1, 2, 3), Tuple(1, 2, 4));
 

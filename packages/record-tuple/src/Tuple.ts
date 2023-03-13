@@ -10,17 +10,17 @@ const finalizer =
   supportsWeak &&
   new FinalizationRegistry<{ tuple: any[]; generation: number }>(
     ({ tuple, generation }) => {
-      (function cleanup(cache = Tuple.cache, path = tuple) {
-        if (path.length === 0 && generation === cache.generation)
-          return (cache.value = null);
+      (function cleanup(current = cache, path = tuple) {
+        if (path.length === 0 && generation === current.generation)
+          return (current.value = null);
 
         const key = path.shift();
-        const nextCache = cache.get(key);
+        const nextCache = current.get(key);
         if (!nextCache) return;
 
         cleanup(nextCache, path);
 
-        if (!nextCache.value && nextCache.size === 0) cache.delete(key);
+        if (!nextCache.value && nextCache.size === 0) current.delete(key);
       })();
     }
   );
@@ -36,8 +36,15 @@ const createCache = () =>
     generation: 0,
   }) as Cache;
 
+const cache = createCache();
+const tuples = supportsWeak ? new WeakSet<Tuple>() : new Set();
+
 function Tuple<T extends Tupleable>(...items: T) {
-  return (function tupleFrom(index = 0, current = Tuple.cache): Tuple<T> {
+  return Tuple.from(items);
+}
+
+Tuple.from = <T extends Tupleable>(items: T): Tuple<T> =>
+  (function tupleFrom(index = 0, current = cache): Tuple<T> {
     if (index === items.length) {
       let { value } = current;
       if (value && "deref" in value) value = value.deref() as Tuple | null;
@@ -52,7 +59,7 @@ function Tuple<T extends Tupleable>(...items: T) {
           generation: ++current.generation,
         });
 
-      Tuple.tuples.add(tuple);
+      tuples.add(tuple);
 
       return tuple;
     }
@@ -61,11 +68,8 @@ function Tuple<T extends Tupleable>(...items: T) {
 
     return tupleFrom(index + 1, current.get(items[index]));
   })();
-}
 
-Tuple.cache = createCache();
-Tuple.tuples = supportsWeak ? new WeakSet<Tuple>() : new Set();
 Tuple.isTuple = (maybeTuple: any): maybeTuple is Tuple =>
-  Tuple.tuples.has(maybeTuple);
+  tuples.has(maybeTuple);
 
 export default Tuple;

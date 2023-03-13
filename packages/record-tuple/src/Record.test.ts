@@ -1,6 +1,6 @@
 import { suite } from "uvu";
 import * as assert from "uvu/assert";
-import Record from "./Record.js";
+import Record, { nonRecordError, symbolKeyError } from "./Record.js";
 import Tuple from "./Tuple.js";
 import { setFlagsFromString } from "v8";
 import { runInNewContext } from "vm";
@@ -29,10 +29,51 @@ test("Provides structural equality with primitive values", () => {
   );
 });
 
+test("Record.entries", () => {
+  assert.is(
+    Record.entries(Record({ a: "a", b: "b" })),
+    Tuple(Tuple("a", "a"), Tuple("b", "b"))
+  );
+
+  try {
+    // @ts-expect-error
+    Record.entries({});
+    assert.unreachable("Should have thrown");
+  } catch (e) {
+    assert.is(e, nonRecordError);
+  }
+});
+
+test("Record.fromEntries", () => {
+  assert.is(
+    Record.fromEntries([
+      ["b", "b"],
+      ["a", "a"],
+    ]),
+    Record({ a: "a", b: "b" })
+  );
+});
+
+test("Throws error with symbol key", () => {
+  try {
+    Record({ [Symbol()]: null });
+    assert.unreachable("Should have thrown");
+  } catch (e) {
+    assert.is(e, symbolKeyError);
+  }
+  try {
+    // @ts-expect-error
+    Record.fromEntries([[Symbol(), null]]);
+    assert.unreachable("Should have thrown");
+  } catch (e) {
+    assert.is(e, symbolKeyError);
+  }
+});
+
 test("Record.isRecord", () => {
   assert.ok(Record.isRecord(Record({ a: "a", b: "b" })));
   assert.not(Record.isRecord(Tuple(1, 2, 3)));
-  assert.not(Record.isRecord(Tuple(Tuple("a", "a"))));
+  assert.not(Record.isRecord(Record.entries(Record({ a: "a" }))));
 });
 
 test("Provides nested structural equality", () => {

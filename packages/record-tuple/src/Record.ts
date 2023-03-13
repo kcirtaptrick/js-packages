@@ -6,25 +6,54 @@ export type Recordable = Readonly<{
 
 type Record<T extends Recordable = Recordable> = T & { __brand: "Record" };
 
-function Record<T extends Recordable>(obj: T) {
-  const tuple = Tuple(
-    ...Object.entries(obj)
-      .sort(([a], [b]) => a.localeCompare(b))
-      .map((entry) => Tuple(...entry))
-  );
+const tuplesByRecord = supportsWeak ? new WeakMap() : new Map();
+const recordsByTuple = supportsWeak ? new WeakMap() : new Map();
 
-  if (!Record.cache.has(tuple)) {
-    const record = Object.freeze({ ...obj });
+export const symbolKeyError = new TypeError(
+  "A Symbol cannot be used as a property key in a Record."
+);
 
-    Record.cache.set(tuple, record);
-    Record.cache.set(record, tuple);
-  }
+export const nonRecordError = new TypeError(
+  "Record.entries received a non-record."
+);
 
-  return Record.cache.get(tuple);
+function Record<T extends Recordable>(obj: T): Record<T> {
+  if (Object.getOwnPropertySymbols(obj).length > 0) throw symbolKeyError;
+
+  return Record.fromEntries(Object.entries(obj));
 }
 
-Record.cache = supportsWeak ? new WeakMap() : new Map();
+Record.entries = <R extends Record>(
+  record: R
+): Tuple<Tuple<[string, any]>[]> => {
+  const tuple = tuplesByRecord.get(record);
+  if (!tuple) throw nonRecordError;
+  return tuple;
+};
+
+Record.fromEntries = <Entries extends [string, any][]>(entries: Entries) => {
+  if (recordsByTuple.has(entries)) return recordsByTuple.get(entries);
+
+  const tuple = Tuple.from(
+    entries
+      .sort(([a], [b]) => a.localeCompare(b))
+      .map((entry) => {
+        if (typeof entry[0] === "symbol") throw symbolKeyError;
+        return Tuple.from(entry);
+      })
+  );
+
+  if (!recordsByTuple.has(tuple)) {
+    const record = Object.freeze(Object.fromEntries(tuple));
+
+    recordsByTuple.set(tuple, record);
+    tuplesByRecord.set(record, tuple);
+  }
+
+  return recordsByTuple.get(tuple);
+};
+
 Record.isRecord = (maybeRecord: any): maybeRecord is Record =>
-  Record.cache.has(maybeRecord) && !Tuple.isTuple(maybeRecord);
+  tuplesByRecord.has(maybeRecord);
 
 export default Record;

@@ -1,5 +1,11 @@
 # record-tuple
 
+## 1.1.1
+
+### Patch Changes
+
+- d1d2b3e: Better types for Record.entries and Record.fromEntries
+
 ## 1.1.0
 
 ### Minor Changes

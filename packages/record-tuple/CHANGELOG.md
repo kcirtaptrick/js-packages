@@ -4,7 +4,7 @@
 
 ### Patch Changes
 
-- d1d2b3e: Better types for Record.entries and Record.fromEntries
+- d1d2b3e: Improved types for Record.entries and Record.fromEntries
 
 ## 1.1.0
 
@@ -22,7 +22,7 @@
 
 ### Patch Changes
 
-- Fix generation logic
+- Fix finalizer generation logic
 
 ## 1.0.1
 

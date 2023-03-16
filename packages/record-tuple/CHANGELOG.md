@@ -1,5 +1,15 @@
 # record-tuple
 
+## 1.2.0
+
+### Minor Changes
+
+- 0b1ad53: Use symbols instead of type branding
+
+### Patch Changes
+
+- be13075: Finalizer tests
+
 ## 1.1.1
 
 ### Patch Changes

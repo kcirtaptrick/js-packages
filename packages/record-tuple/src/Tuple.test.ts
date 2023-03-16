@@ -1,3 +1,5 @@
+import "./mock.test";
+
 import { suite } from "uvu";
 import * as assert from "uvu/assert";
 import Record from "./Record.js";
@@ -65,11 +67,29 @@ test("Works with Records", () => {
 
 test("Does not hold references", async () => {
   const ref = new WeakRef(Tuple(Symbol()));
+  const dispose = FinalizationRegistry.disposerFor(ref.deref()!);
+
   assert.ok(ref.deref() != null);
 
   await new Promise((resolve) => setTimeout(resolve));
 
   gc();
+  dispose();
+
+  assert.ok(ref.deref() == null);
+});
+
+test("Finalizer works with cache already removed (Multiple call)", async () => {
+  const ref = new WeakRef(Tuple(0, 1, 2, 3, 4, 5, 6, 7, 8, 9));
+  const dispose = FinalizationRegistry.disposerFor(ref.deref()!);
+
+  assert.ok(ref.deref() != null);
+
+  await new Promise((resolve) => setTimeout(resolve));
+
+  gc();
+  dispose();
+  dispose();
 
   assert.ok(ref.deref() == null);
 });

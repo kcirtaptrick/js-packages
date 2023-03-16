@@ -1,7 +1,13 @@
+declare global {
+  interface SymbolConstructor {
+    readonly isTuple: unique symbol;
+  }
+}
+
 export type Tupleable = readonly any[];
 
 type Tuple<T extends Tupleable = Tupleable> = T & {
-  __brand: "Tuple";
+  readonly [Symbol.isTuple]: true;
 };
 
 export const supportsWeak = typeof WeakRef !== "undefined";
@@ -50,7 +56,9 @@ Tuple.from = <T extends Tupleable>(items: T): Tuple<T> =>
       if (value && "deref" in value) value = value.deref() as Tuple | null;
       if (value) return value as Tuple<T>;
 
-      const tuple = Object.freeze(items) as unknown as Tuple<T>;
+      const tuple = Object.freeze(
+        Object.assign(items, { [Symbol.isTuple]: true as const })
+      );
 
       current.value = supportsWeak ? new WeakRef(tuple) : tuple;
       if (finalizer)

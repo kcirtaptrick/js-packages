@@ -13,12 +13,17 @@ npm install record-tuple
 ```ts
 import { Tuple, Record } from "record-tuple";
 
+// Returns native data structures
+JSON.stringify(Tuple(1, 2, 3)); // "[1, 2, 3]"
+JSON.stringify(Record({ a: "a", b: "b" })); // '{"a":"a","b":"b"}'
+
 // Structural equality
 Tuple(1, 2, 3) === Tuple(1, 2, 3); // true
 Record({ a: "a", b: "b" }) === Record({ a: "a", b: "b" }); // true
 
 // Records ignore property order
 Record({ a: "a", b: "b" }) === Record({ b: "b", a: "a" }); // true
+JSON.stringify(Record({ b: "b", a: "a" })); // '{"a":"a","b":"b"}'
 
 // As Map/Set keys
 const map = new Map();

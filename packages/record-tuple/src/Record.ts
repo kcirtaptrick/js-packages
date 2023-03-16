@@ -1,13 +1,25 @@
 import Tuple, { supportsWeak } from "./Tuple.js";
 
+declare global {
+  interface SymbolConstructor {
+    readonly isRecord: unique symbol;
+  }
+}
+
 export type Recordable = {
   readonly [key: keyof any]: any;
 };
 
-type Record<T extends Recordable = Recordable> = T & { __brand: "Record" };
+type Record<T extends Recordable = Recordable> = T & {
+  readonly [Symbol.isRecord]: true;
+};
 
-const tuplesByRecord = supportsWeak ? new WeakMap() : new Map();
-const recordsByTuple = supportsWeak ? new WeakMap() : new Map();
+const tuplesByRecord = supportsWeak
+  ? new WeakMap<Record, Tuple>()
+  : (new Map() as never);
+const recordsByTuple = supportsWeak
+  ? new WeakMap<Tuple, Record>()
+  : (new Map() as never);
 
 export const symbolKeyError = new TypeError(
   "A Symbol cannot be used as a property key in a Record."
@@ -27,16 +39,16 @@ type KeysOfUnion<T> = T extends T ? keyof T : never;
 
 type TupleEntries<T> = Tuple<
   {
-    [Key in Exclude<KeysOfUnion<T>, "__brand">]: Tuple<
+    [Key in Exclude<KeysOfUnion<T>, typeof Symbol.isRecord>]: Tuple<
       [Key, Extract<T, { [k in Key]?: any }>[Key]]
     >;
-  }[Exclude<KeysOfUnion<T>, "__brand">][]
+  }[Exclude<KeysOfUnion<T>, typeof Symbol.isRecord>][]
 >;
 
 Record.entries = <R extends Record>(record: R): TupleEntries<R> => {
   const tuple = tuplesByRecord.get(record);
   if (!tuple) throw nonRecordError;
-  return tuple;
+  return tuple as any;
 };
 
 type FromEntries<Entries extends readonly [string, any][]> = {
@@ -46,6 +58,7 @@ type FromEntries<Entries extends readonly [string, any][]> = {
 Record.fromEntries = <Entries extends readonly [string, any][]>(
   entries: Entries
 ): Record<FromEntries<Entries>> => {
+  // @ts-expect-error `entries` is not necessarily a tuple
   if (recordsByTuple.has(entries)) return recordsByTuple.get(entries);
 
   const tuple = Tuple.from(
@@ -58,13 +71,17 @@ Record.fromEntries = <Entries extends readonly [string, any][]>(
   );
 
   if (!recordsByTuple.has(tuple)) {
-    const record = Object.freeze(Object.fromEntries(tuple));
+    const record = Object.freeze(
+      Object.assign(Object.fromEntries(tuple), {
+        [Symbol.isRecord]: true as const,
+      })
+    );
 
     recordsByTuple.set(tuple, record);
     tuplesByRecord.set(record, tuple);
   }
 
-  return recordsByTuple.get(tuple);
+  return recordsByTuple.get(tuple) as any;
 };
 
 Record.isRecord = (maybeRecord: any): maybeRecord is Record =>

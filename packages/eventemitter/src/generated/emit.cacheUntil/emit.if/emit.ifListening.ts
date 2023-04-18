@@ -2,6 +2,8 @@
 
 import {} from "../../../utils";
 
+export {};
+
 type EventDetails = [name: any, data?: any, returnValue?: any];
 
 type FilterDetailsFromName<

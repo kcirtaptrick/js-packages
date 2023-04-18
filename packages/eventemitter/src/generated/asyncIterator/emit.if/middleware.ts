@@ -2,6 +2,8 @@
 
 import { Abort } from "../../../utils";
 
+export { Abort };
+
 type EventDetails = [name: any, data?: any, returnValue?: any];
 
 type FilterDetailsFromName<

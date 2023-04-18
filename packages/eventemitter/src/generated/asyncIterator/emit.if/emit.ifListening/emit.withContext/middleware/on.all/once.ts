@@ -2,6 +2,8 @@
 
 import { Track, Abort } from "../../../../../../../utils";
 
+export { Track, Abort };
+
 type EventDetails = [name: any, data?: any, returnValue?: any];
 
 type FilterDetailsFromName<

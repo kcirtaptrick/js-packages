@@ -1,5 +1,12 @@
 # record-tuple
 
+## 1.3.0
+
+### Minor Changes
+
+- d0036f8: RecordTuple.deep stops at record or tuple
+  isTuple and isRecord symbols were unset, this is no longer the case
+
 ## 1.2.0
 
 ### Minor Changes

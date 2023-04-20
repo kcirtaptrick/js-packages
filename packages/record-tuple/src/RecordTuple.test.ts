@@ -91,4 +91,21 @@ test(".deep: Non-serializables", () => {
   );
 });
 
+test(".deep: Stops at record or tuple", () => {
+  const shouldNotChangeReference = {
+    some: { deep: { object: "value" } },
+  };
+
+  assert.is(
+    RecordTuple.deep({
+      record: Record({ prop: shouldNotChangeReference }),
+      tuple: Tuple(shouldNotChangeReference),
+    }),
+    Record({
+      record: Record({ prop: shouldNotChangeReference }),
+      tuple: Tuple(shouldNotChangeReference),
+    })
+  );
+});
+
 test.run();

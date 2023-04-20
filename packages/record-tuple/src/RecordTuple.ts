@@ -6,19 +6,20 @@ namespace RecordTuple {
   export type Result<T extends Input> = T extends any[] ? Tuple<T> : Record<T>;
 
   export namespace deep {
-    type DeepMap<T extends Tupleable> = T extends readonly [
-      infer Item,
-      ...infer Rest
-    ]
+    type DeepMap<T extends Tupleable> = T extends Tuple
+      ? T
+      : T extends readonly [infer Item, ...infer Rest]
       ? [Item extends Input ? Result<Item> : Item, ...DeepMap<Rest>]
       : T[number] extends never
       ? T
       : T[number] extends Input
       ? Result<T[number]>[]
       : T;
-    type DeepRecord<T extends Recordable> = Record<{
-      [Key in keyof T]: T[Key] extends Input ? Result<T[Key]> : T[Key];
-    }>;
+    type DeepRecord<T extends Recordable> = T extends Record
+      ? T
+      : Record<{
+          [Key in keyof T]: T[Key] extends Input ? Result<T[Key]> : T[Key];
+        }>;
     export type Result<T extends Input> = T extends Tupleable
       ? Tuple<DeepMap<T>>
       : DeepRecord<T>;
@@ -36,6 +37,8 @@ RecordTuple.deep = <T extends RecordTuple.Input>(
 ): RecordTuple.deep.Result<T> => {
   if (!input || typeof input !== "object")
     throw new Error(`RecordTuple.deep: Invalid input ${input}`);
+
+  if (Tuple.isTuple(input) || Record.isRecord(input)) return input as any;
 
   if (Array.isArray(input))
     return Tuple.from(

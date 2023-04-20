@@ -10,7 +10,7 @@ const gc = runInNewContext("gc");
 
 const test = suite("Record");
 
-test("Creates record as array", () => {
+test("Creates record as object", () => {
   assert.equal(Record({}), {});
   assert.equal(Record({ a: "a", b: "b" }), { a: "a", b: "b" });
 });

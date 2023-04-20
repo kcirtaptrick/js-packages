@@ -6,6 +6,9 @@ declare global {
   }
 }
 
+// @ts-expect-error
+Symbol.isRecord ??= Symbol("isRecord");
+
 export type Recordable = {
   readonly [key: keyof any]: any;
 };

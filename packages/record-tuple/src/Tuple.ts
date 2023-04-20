@@ -4,6 +4,9 @@ declare global {
   }
 }
 
+// @ts-expect-error
+Symbol.isTuple ??= Symbol("isTuple");
+
 export type Tupleable = readonly any[];
 
 type Tuple<T extends Tupleable = Tupleable> = T & {

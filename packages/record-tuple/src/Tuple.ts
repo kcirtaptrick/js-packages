@@ -5,7 +5,7 @@ declare global {
 }
 
 // @ts-expect-error
-Symbol.isTuple ??= Symbol("isTuple");
+if (!Symbol.isTuple) Symbol.isTuple = Symbol("isTuple");
 
 export type Tupleable = readonly any[];
 

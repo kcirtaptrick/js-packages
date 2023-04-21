@@ -1,5 +1,11 @@
 # record-tuple
 
+## 1.3.1
+
+### Patch Changes
+
+- ccccf78: Remove ??= syntax
+
 ## 1.3.0
 
 ### Minor Changes

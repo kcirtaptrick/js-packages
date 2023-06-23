@@ -4,7 +4,7 @@ declare global {
   }
 }
 
-// @ts-expect-error
+// @ts-expect-error Symbol.isTuple is usually not assignable
 if (!Symbol.isTuple) Symbol.isTuple = Symbol("isTuple");
 
 export type Tupleable = readonly any[];

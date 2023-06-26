@@ -4,7 +4,7 @@
 import {
   /* +on.all */ Track, /* /on.all */
   /* +middleware */ Abort, /* /middleware */
-} from "./utils";
+} from "./utils.js";
 
 // prettier-ignore
 export { 
@@ -56,7 +56,7 @@ export default class EventEmitterConfiguration<
   >();
 
   /* +emit.cacheUntil */
-  private cache = new Map<
+  #cache = new Map<
     T[number][0] /* +on.all */ | typeof LISTEN_ALL /* /on.all */,
     Set<
       readonly [
@@ -71,7 +71,7 @@ export default class EventEmitterConfiguration<
   /* /emit.cacheUntil */
 
   /* +middleware */
-  middleware = new Set<
+  #middleware = new Set<
     Middleware<T /* +emit.withContext */, Context /* /emit.withContext */>
   >();
   /* /middleware */
@@ -94,7 +94,7 @@ export default class EventEmitterConfiguration<
       Context /* /emit.withContext */
     >
   ) {
-    this.middleware.add(middleware);
+    this.#middleware.add(middleware);
 
     return {
       and: this as EventEmitterConfiguration<
@@ -102,7 +102,7 @@ export default class EventEmitterConfiguration<
         Context /* /emit.withContext */
       >,
       unuse: () => {
-        this.middleware.delete(middleware);
+        this.#middleware.delete(middleware);
       },
     };
   }
@@ -113,7 +113,7 @@ export default class EventEmitterConfiguration<
       Context /* /emit.withContext */
     >
   ) {
-    const removed = this.middleware.delete(middleware);
+    const removed = this.#middleware.delete(middleware);
 
     return {
       removed,
@@ -143,7 +143,7 @@ export default class EventEmitterConfiguration<
         Abort
       >;
 
-      for (const middleware of this.middleware) {
+      for (const middleware of this.#middleware) {
         const result = middleware(...payload);
         if (result instanceof Abort) return result;
 
@@ -194,14 +194,14 @@ export default class EventEmitterConfiguration<
         this.#listeners.get(name)!.add(handler);
 
         /* +emit.cacheUntil */
-        if (this.cache.has(name)) {
+        if (this.#cache.has(name)) {
           for (const [
             _name,
             data,
             /* +emit.withContext */
             context,
             /* /emit.withContext */
-          ] of this.cache.get(name)!)
+          ] of this.#cache.get(name)!)
             // prettier-ignore
             /* +on.all */
             if (name === LISTEN_ALL) (handler as any)(
@@ -490,12 +490,12 @@ export default class EventEmitterConfiguration<
               /* /emit.withContext */
             ] as const;
             for (const key of keys) {
-              if (!this.cache.has(key)) this.cache.set(key, new Set());
-              this.cache.get(key)!.add(tracked);
+              if (!this.#cache.has(key)) this.#cache.set(key, new Set());
+              this.#cache.get(key)!.add(tracked);
             }
 
             options.cacheUntil.then(() => {
-              for (const key of keys) this.cache.get(key)!.delete(tracked);
+              for (const key of keys) this.#cache.get(key)!.delete(tracked);
             });
           }
           /* /emit.cacheUntil */

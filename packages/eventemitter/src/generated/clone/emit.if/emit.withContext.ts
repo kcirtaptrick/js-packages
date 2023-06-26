@@ -1,6 +1,6 @@
 /* clone emit.if emit.withContext */
 
-import {} from "../../../utils";
+import {} from "../../../utils.js";
 
 export {};
 

@@ -1,6 +1,6 @@
 /* asyncIterator clone emit.if many on.all */
 
-import { Track } from "../../../../../utils";
+import { Track } from "../../../../../utils.js";
 
 export { Track };
 

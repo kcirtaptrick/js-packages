@@ -1,6 +1,6 @@
 /* clone emit.cacheUntil emit.if emit.ifListening emit.withContext many on.all */
 
-import { Track } from "../../../../../../../utils";
+import { Track } from "../../../../../../../utils.js";
 
 export { Track };
 
@@ -41,7 +41,7 @@ export default class EventEmitterConfiguration<
     Set<(...args: any) => any>
   >();
 
-  private cache = new Map<
+  #cache = new Map<
     T[number][0] | typeof LISTEN_ALL,
     Set<
       readonly [
@@ -81,8 +81,8 @@ export default class EventEmitterConfiguration<
       if (handler) {
         this.#listeners.get(name)!.add(handler);
 
-        if (this.cache.has(name)) {
-          for (const [_name, data, context] of this.cache.get(name)!)
+        if (this.#cache.has(name)) {
+          for (const [_name, data, context] of this.#cache.get(name)!)
             if (name === LISTEN_ALL)
               (handler as any)(
                 _name,
@@ -224,12 +224,12 @@ export default class EventEmitterConfiguration<
             // Make reference for emitted data, this will allow for easy expiration
             const tracked = [_name, _data, _context] as const;
             for (const key of keys) {
-              if (!this.cache.has(key)) this.cache.set(key, new Set());
-              this.cache.get(key)!.add(tracked);
+              if (!this.#cache.has(key)) this.#cache.set(key, new Set());
+              this.#cache.get(key)!.add(tracked);
             }
 
             options.cacheUntil.then(() => {
-              for (const key of keys) this.cache.get(key)!.delete(tracked);
+              for (const key of keys) this.#cache.get(key)!.delete(tracked);
             });
           }
 

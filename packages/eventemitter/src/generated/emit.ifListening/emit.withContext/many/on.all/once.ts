@@ -1,6 +1,6 @@
 /* emit.ifListening emit.withContext many on.all once */
 
-import { Track } from "../../../../../utils";
+import { Track } from "../../../../../utils.js";
 
 export { Track };
 

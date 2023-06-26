@@ -1,6 +1,6 @@
 /* clone emit.cacheUntil emit.if emit.ifListening middleware on.all */
 
-import { Track, Abort } from "../../../../../../utils";
+import { Track, Abort } from "../../../../../../utils.js";
 
 export { Track, Abort };
 
@@ -33,12 +33,12 @@ export default class EventEmitterConfiguration<T extends EventDetails[] = any> {
     Set<(...args: any) => any>
   >();
 
-  private cache = new Map<
+  #cache = new Map<
     T[number][0] | typeof LISTEN_ALL,
     Set<readonly [name: T[number][0], data: T[number][1]]>
   >();
 
-  middleware = new Set<Middleware<T>>();
+  #middleware = new Set<Middleware<T>>();
 
   constructor() {
     this.destroy = this.destroy.bind(this);
@@ -50,18 +50,18 @@ export default class EventEmitterConfiguration<T extends EventDetails[] = any> {
   }
 
   use(middleware: Middleware<T>) {
-    this.middleware.add(middleware);
+    this.#middleware.add(middleware);
 
     return {
       and: this as EventEmitterConfiguration<T>,
       unuse: () => {
-        this.middleware.delete(middleware);
+        this.#middleware.delete(middleware);
       },
     };
   }
 
   unuse(middleware: Middleware<T>) {
-    const removed = this.middleware.delete(middleware);
+    const removed = this.#middleware.delete(middleware);
 
     return {
       removed,
@@ -76,7 +76,7 @@ export default class EventEmitterConfiguration<T extends EventDetails[] = any> {
         Abort
       >;
 
-      for (const middleware of this.middleware) {
+      for (const middleware of this.#middleware) {
         const result = middleware(...payload);
         if (result instanceof Abort) return result;
 
@@ -109,8 +109,8 @@ export default class EventEmitterConfiguration<T extends EventDetails[] = any> {
       if (handler) {
         this.#listeners.get(name)!.add(handler);
 
-        if (this.cache.has(name)) {
-          for (const [_name, data] of this.cache.get(name)!)
+        if (this.#cache.has(name)) {
+          for (const [_name, data] of this.#cache.get(name)!)
             if (name === LISTEN_ALL) (handler as any)(_name, data);
             else (handler as any)(data);
         }
@@ -197,12 +197,12 @@ export default class EventEmitterConfiguration<T extends EventDetails[] = any> {
             // Make reference for emitted data, this will allow for easy expiration
             const tracked = [_name, _data] as const;
             for (const key of keys) {
-              if (!this.cache.has(key)) this.cache.set(key, new Set());
-              this.cache.get(key)!.add(tracked);
+              if (!this.#cache.has(key)) this.#cache.set(key, new Set());
+              this.#cache.get(key)!.add(tracked);
             }
 
             options.cacheUntil.then(() => {
-              for (const key of keys) this.cache.get(key)!.delete(tracked);
+              for (const key of keys) this.#cache.get(key)!.delete(tracked);
             });
           }
 

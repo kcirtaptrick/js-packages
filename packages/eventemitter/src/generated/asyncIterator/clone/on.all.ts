@@ -1,6 +1,6 @@
 /* asyncIterator clone on.all */
 
-import { Track } from "../../../utils";
+import { Track } from "../../../utils.js";
 
 export { Track };
 

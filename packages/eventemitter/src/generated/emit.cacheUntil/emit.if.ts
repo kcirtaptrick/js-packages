@@ -1,6 +1,6 @@
 /* emit.cacheUntil emit.if */
 
-import {} from "../../utils";
+import {} from "../../utils.js";
 
 export {};
 
@@ -28,7 +28,7 @@ const DESTROY_ALL = Symbol("EventEmitter.DESTROY_ALL");
 export default class EventEmitterConfiguration<T extends EventDetails[] = any> {
   #listeners = new Map<T[number][0], Set<(...args: any) => any>>();
 
-  private cache = new Map<
+  #cache = new Map<
     T[number][0],
     Set<readonly [name: T[number][0], data: T[number][1]]>
   >();
@@ -59,8 +59,8 @@ export default class EventEmitterConfiguration<T extends EventDetails[] = any> {
       if (handler) {
         this.#listeners.get(name)!.add(handler);
 
-        if (this.cache.has(name)) {
-          for (const [_name, data] of this.cache.get(name)!)
+        if (this.#cache.has(name)) {
+          for (const [_name, data] of this.#cache.get(name)!)
             (handler as any)(data);
         }
       }
@@ -123,12 +123,12 @@ export default class EventEmitterConfiguration<T extends EventDetails[] = any> {
             // Make reference for emitted data, this will allow for easy expiration
             const tracked = [_name, _data] as const;
             for (const key of keys) {
-              if (!this.cache.has(key)) this.cache.set(key, new Set());
-              this.cache.get(key)!.add(tracked);
+              if (!this.#cache.has(key)) this.#cache.set(key, new Set());
+              this.#cache.get(key)!.add(tracked);
             }
 
             options.cacheUntil.then(() => {
-              for (const key of keys) this.cache.get(key)!.delete(tracked);
+              for (const key of keys) this.#cache.get(key)!.delete(tracked);
             });
           }
 

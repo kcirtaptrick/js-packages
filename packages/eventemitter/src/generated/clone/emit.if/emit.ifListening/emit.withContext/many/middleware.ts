@@ -1,6 +1,6 @@
 /* clone emit.if emit.ifListening emit.withContext many middleware */
 
-import { Abort } from "../../../../../../utils";
+import { Abort } from "../../../../../../utils.js";
 
 export { Abort };
 
@@ -36,7 +36,7 @@ export default class EventEmitterConfiguration<
 > {
   #listeners = new Map<T[number][0], Set<(...args: any) => any>>();
 
-  middleware = new Set<Middleware<T, Context>>();
+  #middleware = new Set<Middleware<T, Context>>();
 
   constructor() {
     this.destroy = this.destroy.bind(this);
@@ -48,18 +48,18 @@ export default class EventEmitterConfiguration<
   }
 
   use(middleware: Middleware<T, Context>) {
-    this.middleware.add(middleware);
+    this.#middleware.add(middleware);
 
     return {
       and: this as EventEmitterConfiguration<T, Context>,
       unuse: () => {
-        this.middleware.delete(middleware);
+        this.#middleware.delete(middleware);
       },
     };
   }
 
   unuse(middleware: Middleware<T, Context>) {
-    const removed = this.middleware.delete(middleware);
+    const removed = this.#middleware.delete(middleware);
 
     return {
       removed,
@@ -74,7 +74,7 @@ export default class EventEmitterConfiguration<
         Abort
       >;
 
-      for (const middleware of this.middleware) {
+      for (const middleware of this.#middleware) {
         const result = middleware(...payload);
         if (result instanceof Abort) return result;
 

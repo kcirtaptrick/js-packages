@@ -1,6 +1,6 @@
 /* asyncIterator clone emit.withContext many */
 
-import {} from "../../../../utils";
+import {} from "../../../../utils.js";
 
 export {};
 

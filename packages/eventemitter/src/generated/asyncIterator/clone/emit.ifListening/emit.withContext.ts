@@ -1,6 +1,6 @@
 /* asyncIterator clone emit.ifListening emit.withContext */
 
-import {} from "../../../../utils";
+import {} from "../../../../utils.js";
 
 export {};
 

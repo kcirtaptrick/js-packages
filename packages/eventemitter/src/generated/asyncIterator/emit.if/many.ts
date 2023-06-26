@@ -1,6 +1,6 @@
 /* asyncIterator emit.if many */
 
-import {} from "../../../utils";
+import {} from "../../../utils.js";
 
 export {};
 

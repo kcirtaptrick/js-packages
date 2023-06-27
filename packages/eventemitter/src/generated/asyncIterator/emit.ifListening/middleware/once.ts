@@ -103,7 +103,7 @@ export default class EventEmitterConfiguration<T extends EventDetails[] = any> {
       }
 
       return {
-        and: this as EventEmitterConfiguration<T>,
+        and: this as Self,
         off: () => this.off(name, handler!),
 
         async *[Symbol.asyncIterator]() {

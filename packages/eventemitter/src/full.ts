@@ -224,10 +224,7 @@ export default class EventEmitterConfiguration<
       }
 
       return {
-        and: this as EventEmitterConfiguration<
-          T /* +emit.withContext */,
-          Context /* /emit.withContext */
-        >,
+        and: this as Self,
         off: () => this.off(name, handler!),
         /* +asyncIterator */
         async *[Symbol.asyncIterator]() {

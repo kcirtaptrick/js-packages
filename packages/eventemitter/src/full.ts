@@ -416,7 +416,17 @@ export default class EventEmitterConfiguration<
         >(
           name: E,
           ...[data]: Details[1] extends undefined ? [] : [data: Details[1]]
-        ) => {
+        ): {
+          result: Details[2] | undefined;
+          results: Details[2][];
+          and: EventEmitterConfiguration<
+            T /* +emit.withContext */,
+            Context /* /emit.withContext */
+          >;
+          /* +middleware */
+          abortedWith: Abort | null;
+          /* /middleware */
+        } => {
           /* +middleware */
           const middlwareResult = this.#applyMiddleware(
             name,
@@ -424,7 +434,12 @@ export default class EventEmitterConfiguration<
             options.context /* /emit.withContext */
           );
           if (middlwareResult instanceof Abort)
-            return { result: [], and: this, abortedWith: middlwareResult };
+            return {
+              result: undefined,
+              results: [],
+              and: this,
+              abortedWith: middlwareResult,
+            };
           /* /middleware */
 
           const [
@@ -448,7 +463,7 @@ export default class EventEmitterConfiguration<
             /* /on.all */
           ];
 
-          const result: Details[2][] = [];
+          const results: Details[2][] = [];
           for (const key of keys)
           // prettier-ignore
           if (this.#listeners.has(key))
@@ -462,12 +477,12 @@ export default class EventEmitterConfiguration<
                   _context
                   /* /emit.withContext */
                 );
-                if (r instanceof Track) result.push(r.value);
+                if (r instanceof Track) results.push(r.value);
               }
             else
             /* /on.all */ 
               for (const listener of this.#listeners.get(key)!)
-                result.push(
+                results.push(
                   listener(
                     _data,
                     /* +emit.withContext */
@@ -498,13 +513,11 @@ export default class EventEmitterConfiguration<
           /* /emit.cacheUntil */
 
           return {
-            result,
-            and: this as EventEmitterConfiguration<
-              T /* +emit.withContext */,
-              Context /* /emit.withContext */
-            >,
+            result: results[0],
+            results,
+            and: this,
             /* +middleware */
-            abortedWith: null as Abort | null,
+            abortedWith: null,
             /* /middleware */
           };
         },

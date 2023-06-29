@@ -197,20 +197,31 @@ export default class EventEmitterConfiguration<T extends EventDetails[] = any> {
         >(
           name: E,
           ...[data]: Details[1] extends undefined ? [] : [data: Details[1]]
-        ) => {
+        ): {
+          result: Details[2] | undefined;
+          results: Details[2][];
+          and: EventEmitterConfiguration<T>;
+
+          abortedWith: Abort | null;
+        } => {
           const middlwareResult = this.#applyMiddleware(name, data);
           if (middlwareResult instanceof Abort)
-            return { result: [], and: this, abortedWith: middlwareResult };
+            return {
+              result: undefined,
+              results: [],
+              and: this,
+              abortedWith: middlwareResult,
+            };
 
           const [_name, _data] = middlwareResult || [name, data];
 
           const keys = [_name];
 
-          const result: Details[2][] = [];
+          const results: Details[2][] = [];
           for (const key of keys)
             if (this.#listeners.has(key))
               for (const listener of this.#listeners.get(key)!)
-                result.push(listener(_data));
+                results.push(listener(_data));
 
           if (options.cacheUntil) {
             // Make reference for emitted data, this will allow for easy expiration
@@ -226,10 +237,11 @@ export default class EventEmitterConfiguration<T extends EventDetails[] = any> {
           }
 
           return {
-            result,
-            and: this as EventEmitterConfiguration<T>,
+            result: results[0],
+            results,
+            and: this,
 
-            abortedWith: null as Abort | null,
+            abortedWith: null,
           };
         },
         {

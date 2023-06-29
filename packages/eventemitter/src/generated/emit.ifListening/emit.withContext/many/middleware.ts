@@ -170,14 +170,25 @@ export default class EventEmitterConfiguration<
         >(
           name: E,
           ...[data]: Details[1] extends undefined ? [] : [data: Details[1]]
-        ) => {
+        ): {
+          result: Details[2] | undefined;
+          results: Details[2][];
+          and: EventEmitterConfiguration<T, Context>;
+
+          abortedWith: Abort | null;
+        } => {
           const middlwareResult = this.#applyMiddleware(
             name,
             data,
             options.context
           );
           if (middlwareResult instanceof Abort)
-            return { result: [], and: this, abortedWith: middlwareResult };
+            return {
+              result: undefined,
+              results: [],
+              and: this,
+              abortedWith: middlwareResult,
+            };
 
           const [_name, _data, _context] = middlwareResult || [
             name,
@@ -188,11 +199,11 @@ export default class EventEmitterConfiguration<
 
           const keys = [_name];
 
-          const result: Details[2][] = [];
+          const results: Details[2][] = [];
           for (const key of keys)
             if (this.#listeners.has(key))
               for (const listener of this.#listeners.get(key)!)
-                result.push(
+                results.push(
                   listener(
                     _data,
 
@@ -201,10 +212,11 @@ export default class EventEmitterConfiguration<
                 );
 
           return {
-            result,
-            and: this as EventEmitterConfiguration<T, Context>,
+            result: results[0],
+            results,
+            and: this,
 
-            abortedWith: null as Abort | null,
+            abortedWith: null,
           };
         },
         {

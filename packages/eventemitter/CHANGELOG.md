@@ -1,5 +1,11 @@
 # configurable-eventemitter
 
+## 0.2.0
+
+### Minor Changes
+
+- c0abae9: emit().result -> result + results
+
 ## 0.1.8
 
 ### Patch Changes

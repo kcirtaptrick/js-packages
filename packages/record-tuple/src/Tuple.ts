@@ -52,33 +52,36 @@ function Tuple<T extends Tupleable>(...items: T) {
   return Tuple.from(items);
 }
 
-Tuple.from = <T extends Tupleable>(items: T): Tuple<T> =>
-  (function tupleFrom(index = 0, current = cache): Tuple<T> {
-    if (index === items.length) {
-      let { value } = current;
-      if (value && "deref" in value) value = value.deref() as Tuple | null;
-      if (value) return value as Tuple<T>;
+Tuple.from = <T extends Tupleable>(items: T): Tuple<T> => {
+  let current = cache;
+  let i = 0;
 
-      const tuple = Object.freeze(
-        Object.assign(items, { [Symbol.isTuple]: true as const })
-      );
+  for (; i < items.length; ++i) {
+    const item = items[i];
 
-      current.value = supportsWeak ? new WeakRef(tuple) : tuple;
-      if (finalizer)
-        finalizer.register(tuple, {
-          tuple: [...tuple],
-          generation: ++current.generation,
-        });
+    if (!current.has(item)) current.set(item, createCache());
+    current = current.get(item)!;
+  }
 
-      tuples.add(tuple);
+  let { value } = current;
+  if (value && "deref" in value) value = value.deref() as Tuple | null;
+  if (value) return value as Tuple<T>;
 
-      return tuple;
-    }
+  const tuple = Object.freeze(
+    Object.assign(items, { [Symbol.isTuple]: true as const })
+  );
 
-    if (!current.has(items[index])) current.set(items[index], createCache());
+  current.value = supportsWeak ? new WeakRef(tuple) : tuple;
+  if (finalizer)
+    finalizer.register(tuple, {
+      tuple: [...tuple],
+      generation: ++current.generation,
+    });
 
-    return tupleFrom(index + 1, current.get(items[index]));
-  })();
+  tuples.add(tuple);
+
+  return tuple;
+};
 
 Tuple.isTuple = (maybeTuple: any): maybeTuple is Tuple =>
   tuples.has(maybeTuple);

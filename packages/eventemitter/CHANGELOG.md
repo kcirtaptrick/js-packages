@@ -1,5 +1,11 @@
 # configurable-eventemitter
 
+## 0.2.1
+
+### Patch Changes
+
+- 241b3d3: Add namespaced type helpers
+
 ## 0.2.0
 
 ### Minor Changes

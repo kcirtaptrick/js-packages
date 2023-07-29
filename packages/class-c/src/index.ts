@@ -1,5 +1,9 @@
 type C = <
-  T extends string | TemplateStringsArray | Record<string, string> | undefined
+  T extends
+    | string
+    | TemplateStringsArray
+    | Readonly<Record<string, string>>
+    | undefined
 >(
   stringsOrClassMap: T,
   ...values: T extends TemplateStringsArray ? any[] : never
@@ -59,7 +63,7 @@ const classNameFromTemplate =
       strings
         .reduce(
           (acc, curr, i) =>
-            `${acc}${curr}${(function getString(value): any {
+            `${acc}${curr}${(function getString(value = values[i]): any {
               if (!value) return "";
 
               if (
@@ -87,7 +91,7 @@ const classNameFromTemplate =
                   .join(" ");
 
               return "";
-            })(values[i])}`,
+            })()}`,
           ""
         )
         .replace(/\s+/g, " ")

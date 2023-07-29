@@ -12,10 +12,10 @@ export {
   /* +middleware */ Abort, /* /middleware */
 };
 
-type EventDetails = [name: any, data?: any, returnValue?: any];
+type EventDetails = [name: any, data?: any, result?: any];
 
 type FilterDetailsFromName<
-  List extends [name: any, data?: any, returnValue?: any][],
+  List extends [name: any, data?: any, result?: any][],
   First
 > = List extends [infer Current, ...infer R]
   ? Current extends EventDetails
@@ -44,7 +44,7 @@ const DESTROY_ALL = Symbol("EventEmitter.DESTROY_ALL");
 const LISTEN_ALL = Symbol("EventEmitter.LISTEN_ALL");
 /* /on.all */
 
-export default class EventEmitterConfiguration<
+class EventEmitterConfiguration<
   T extends EventDetails[] = any,
   /* +emit.withContext */
   Context extends any = never
@@ -588,6 +588,35 @@ export default class EventEmitterConfiguration<
   /* /clone */
 }
 
+export default EventEmitterConfiguration;
+
+declare namespace EventEmitterConfiguration {
+  type DetailsFor<
+    EE extends EventEmitterConfiguration,
+    Name extends EE extends EventEmitterConfiguration<infer Events>
+      ? Events[number][0]
+      : never
+  > = FilterDetailsFromName<
+    EE extends EventEmitterConfiguration<infer Events> ? Events : never,
+    Name
+  >[number];
+  type DataFor<
+    EE extends EventEmitterConfiguration,
+    Name extends EE extends EventEmitterConfiguration<infer Events>
+      ? Events[number][0]
+      : never
+  > = DetailsFor<EE, Name>[1];
+  type ResultFor<
+    EE extends EventEmitterConfiguration,
+    Name extends EE extends EventEmitterConfiguration<infer Events>
+      ? Events[number][0]
+      : never
+  > = DetailsFor<EE, Name>[2];
+}
+
+/**
+ * @deprecated Use EventEmitterConfiguration.DetailsFor
+ */
 export type EventDetailsFromName<
   EE extends EventEmitterConfiguration,
   Name extends EE extends EventEmitterConfiguration<infer Events>

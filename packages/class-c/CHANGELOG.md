@@ -1,5 +1,11 @@
 # class-c
 
+## 0.0.9
+
+### Patch Changes
+
+- aef1ddc: Mark class map as readonly
+
 ## 0.0.8
 
 ### Patch Changes

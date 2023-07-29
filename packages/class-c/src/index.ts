@@ -62,18 +62,20 @@ const classNameFromTemplate =
             `${acc}${curr}${(function getString(value): any {
               if (!value) return "";
 
-              if (value instanceof Array)
-                return value
-                  .map((item) => getString(item))
-                  .filter((item) => typeof item === "string")
-                  .join(" ");
-
               if (
                 typeof value === "string" ||
                 typeof value === "number" ||
                 value instanceof String
               )
                 return value;
+
+              if (Array.isArray(value))
+                return value
+                  .map((item) => getString(item))
+                  .filter((item) => typeof item === "string")
+                  .join(" ");
+
+              if (typeof value === "function") return getString(value());
 
               if (typeof value === "object")
                 return Object.entries(value)

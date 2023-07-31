@@ -1,6 +1,6 @@
 {
   "name": "configurable-eventemitter",
-  "version": "0.2.1",
+  "version": "0.3.0",
   "description": "A modern event emitter",
   "author": "Patrick Wang <patrick.bohan.wang@gmail.com>",
   "homepage": "https://github.com/kcirtaptrick/js-packages/tree/master/packages/eventemitter#readme",

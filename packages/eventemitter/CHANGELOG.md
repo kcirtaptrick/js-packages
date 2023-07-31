@@ -1,5 +1,11 @@
 # configurable-eventemitter
 
+## 0.3.0
+
+### Minor Changes
+
+- f579dec2: Type namespacing
+
 ## 0.2.1
 
 ### Patch Changes

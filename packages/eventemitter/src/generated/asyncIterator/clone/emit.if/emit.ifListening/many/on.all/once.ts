@@ -4,10 +4,10 @@ import { Track } from "../../../../../../../utils.js";
 
 export { Track };
 
-type EventDetails = [name: any, data?: any, returnValue?: any];
+type EventDetails = EventEmitterConfiguration.EventDetails;
 
 type FilterDetailsFromName<
-  List extends [name: any, data?: any, returnValue?: any][],
+  List extends [name: any, data?: any, result?: any][],
   First
 > = List extends [infer Current, ...infer R]
   ? Current extends EventDetails
@@ -27,7 +27,7 @@ const DESTROY_ALL = Symbol("EventEmitter.DESTROY_ALL");
 
 const LISTEN_ALL = Symbol("EventEmitter.LISTEN_ALL");
 
-export default class EventEmitterConfiguration<T extends EventDetails[] = any> {
+class EventEmitterConfiguration<T extends EventDetails[] = any> {
   #listeners = new Map<
     T[number][0] | typeof LISTEN_ALL,
     Set<(...args: any) => any>
@@ -298,14 +298,41 @@ export default class EventEmitterConfiguration<T extends EventDetails[] = any> {
   }
 }
 
+export default EventEmitterConfiguration;
+
+declare namespace EventEmitterConfiguration {
+  type DetailsFor<
+    EE extends EventEmitterConfiguration,
+    Name extends EE extends EventEmitterConfiguration<infer Events>
+      ? Events[number][0]
+      : never
+  > = FilterDetailsFromName<
+    EE extends EventEmitterConfiguration<infer Events> ? Events : never,
+    Name
+  >[number];
+  type DataFor<
+    EE extends EventEmitterConfiguration,
+    Name extends EE extends EventEmitterConfiguration<infer Events>
+      ? Events[number][0]
+      : never
+  > = DetailsFor<EE, Name>[1];
+  type ResultFor<
+    EE extends EventEmitterConfiguration,
+    Name extends EE extends EventEmitterConfiguration<infer Events>
+      ? Events[number][0]
+      : never
+  > = DetailsFor<EE, Name>[2];
+  type EventDetails = [name: any, data?: any, result?: any];
+}
+
+/**
+ * @deprecated Use EventEmitterConfiguration.DetailsFor
+ */
 export type EventDetailsFromName<
   EE extends EventEmitterConfiguration,
   Name extends EE extends EventEmitterConfiguration<infer Events>
     ? Events[number][0]
     : never
-> = FilterDetailsFromName<
-  EE extends EventEmitterConfiguration<infer Events> ? Events : never,
-  Name
->[number];
+> = EventEmitterConfiguration.DetailsFor<EE, Name>;
 
 type Falsy = false | 0 | "" | null | undefined;

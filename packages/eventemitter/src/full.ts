@@ -12,7 +12,7 @@ export {
   /* +middleware */ Abort, /* /middleware */
 };
 
-type EventDetails = [name: any, data?: any, result?: any];
+type EventDetails = EventEmitterConfiguration.EventDetails;
 
 type FilterDetailsFromName<
   List extends [name: any, data?: any, result?: any][],
@@ -612,6 +612,7 @@ declare namespace EventEmitterConfiguration {
       ? Events[number][0]
       : never
   > = DetailsFor<EE, Name>[2];
+  type EventDetails = [name: any, data?: any, result?: any];
 }
 
 /**
@@ -622,10 +623,7 @@ export type EventDetailsFromName<
   Name extends EE extends EventEmitterConfiguration<infer Events>
     ? Events[number][0]
     : never
-> = FilterDetailsFromName<
-  EE extends EventEmitterConfiguration<infer Events> ? Events : never,
-  Name
->[number];
+> = EventEmitterConfiguration.DetailsFor<EE, Name>;
 
 /* +emit.if */
 type Falsy = false | 0 | "" | null | undefined;

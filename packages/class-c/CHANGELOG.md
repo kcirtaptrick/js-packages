@@ -1,5 +1,11 @@
 # class-c
 
+## 0.0.10
+
+### Patch Changes
+
+- 70790731: Fix class map argument type
+
 ## 0.0.9
 
 ### Patch Changes

@@ -6,7 +6,7 @@ type C = <
     | undefined
 >(
   stringsOrClassMap: T,
-  ...values: T extends TemplateStringsArray ? any[] : never
+  ...values: T extends TemplateStringsArray ? any[] : []
 ) => T extends TemplateStringsArray | string | undefined
   ? string & { c: C }
   : (strings: TemplateStringsArray, ...v: any) => string & { c: C };

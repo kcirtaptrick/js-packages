@@ -6,6 +6,7 @@
   - [Installation](#installation)
   - [Usage](#usage)
     - [Basic](#basic)
+    - [Function values](#function-values)
     - [Chaining](#chaining)
     - [Conditionals](#conditionals)
     - [CSS Modules](#css-modules)
@@ -40,6 +41,16 @@ c`
 
 // Calling with a string can be useful for class forwarding, see CSS Modules section
 c("a b"); // => "a b"
+```
+
+### Function values
+
+Functions passed into the template will be unwrapped to their return value
+
+```ts
+import c from "class-c";
+
+c`a ${() => "b"}`; // => "a b"
 ```
 
 ### Chaining
@@ -79,6 +90,9 @@ const highlighted = () => false;
 const open = () => true;
 
 c`${{ focused, highlighted, open }}`; // => "focused open"
+
+// Function values may also return conditional maps
+c`${() => ({ focused, highlighted, open })}`; // => "focused open"
 ```
 
 ### CSS Modules

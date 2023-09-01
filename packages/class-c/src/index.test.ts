@@ -50,6 +50,10 @@ test("Interpolation", () => {
   matches(c`${"a"}`.c`b ${"c"}`.c`${"d"} e`.c`f ${"g"} h`, "a b c d e f g h");
 });
 
+test("Function value => Plain string", () => {
+  matches(c`a ${() => "b"}`, "a b");
+});
+
 test("Conditionals", () => {
   matches(c`${false && "a"}`, "");
   matches(c`a ${false && "b"}`, "a");
@@ -66,14 +70,6 @@ test("Conditionals", () => {
   );
 });
 
-test("Function conditionals", () => {
-  const focused = () => true;
-  const highlighted = () => false;
-  const open = () => true;
-
-  matches(c`${{ focused, highlighted, open }}`, "focused open");
-});
-
 test("Conditional map", () => {
   matches(c`${{}}`, "");
   matches(c`${{ a: true }}`, "a");
@@ -86,6 +82,18 @@ test("Conditional map", () => {
   matches(c`${{ a: true, b: true }} c`, "a b c");
   matches(c`a ${{ b: true, c: true }}`, "a b c");
   matches(c`a ${{ b: true, c: true }} d`, "a b c d");
+});
+
+test("Function value => Conditional map", () => {
+  matches(c`${() => ({ a: true, b: false, c: true })}`, "a c");
+});
+
+test("Conditional map: Function values", () => {
+  const focused = () => true;
+  const highlighted = () => false;
+  const open = () => true;
+
+  matches(c`${{ focused, highlighted, open }}`, "focused open");
 });
 
 const makeModule = (prefix: string) =>

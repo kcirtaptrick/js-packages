@@ -1,5 +1,11 @@
 # configurable-eventemitter
 
+## 0.3.2
+
+### Patch Changes
+
+- ee3300ee: Allow optional data arg
+
 ## 0.3.1
 
 ### Patch Changes

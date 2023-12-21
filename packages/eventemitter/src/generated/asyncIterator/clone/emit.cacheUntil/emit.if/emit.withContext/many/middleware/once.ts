@@ -242,7 +242,9 @@ class EventEmitterConfiguration<
           Details extends FilterDetailsFromName<T, E>[number]
         >(
           name: E,
-          ...[data]: Details[1] extends undefined ? [] : [data: Details[1]]
+          ...[data]: Details[1] extends undefined
+            ? [data?: undefined]
+            : [data: Details[1]]
         ): {
           result: Details[2] | undefined;
           results: Details[2][];
@@ -324,7 +326,7 @@ class EventEmitterConfiguration<
               | [
                   name: E,
                   ...maybeData: Details[1] extends undefined
-                    ? []
+                    ? [data?: undefined]
                     : [data: Details[1]]
                 ]
               | Falsy

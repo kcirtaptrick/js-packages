@@ -1,5 +1,11 @@
 # configurable-eventemitter
 
+## 0.3.1
+
+### Patch Changes
+
+- ee9e1172: Add Details, Name, Data and Result helper types
+
 ## 0.3.0
 
 ### Minor Changes

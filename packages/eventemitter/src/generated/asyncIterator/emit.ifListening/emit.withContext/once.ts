@@ -206,27 +206,26 @@ class EventEmitterConfiguration<
 export default EventEmitterConfiguration;
 
 declare namespace EventEmitterConfiguration {
+  type Details<EE extends EventEmitterConfiguration> =
+    EE extends EventEmitterConfiguration<infer Events> ? Events[number] : never;
+  type Name<EE extends EventEmitterConfiguration> = Details<EE>[0];
+  type Data<EE extends EventEmitterConfiguration> = Details<EE>[0];
+  type Result<EE extends EventEmitterConfiguration> = Details<EE>[0];
   type DetailsFor<
     EE extends EventEmitterConfiguration,
-    Name extends EE extends EventEmitterConfiguration<infer Events>
-      ? Events[number][0]
-      : never
+    N extends Name<EE>
   > = FilterDetailsFromName<
     EE extends EventEmitterConfiguration<infer Events> ? Events : never,
-    Name
+    N
   >[number];
   type DataFor<
     EE extends EventEmitterConfiguration,
-    Name extends EE extends EventEmitterConfiguration<infer Events>
-      ? Events[number][0]
-      : never
-  > = DetailsFor<EE, Name>[1];
+    N extends Name<EE>
+  > = DetailsFor<EE, N>[1];
   type ResultFor<
     EE extends EventEmitterConfiguration,
-    Name extends EE extends EventEmitterConfiguration<infer Events>
-      ? Events[number][0]
-      : never
-  > = DetailsFor<EE, Name>[2];
+    N extends Name<EE>
+  > = DetailsFor<EE, N>[2];
   type EventDetails = [name: any, data?: any, result?: any];
 }
 

@@ -1,5 +1,11 @@
 # record-tuple
 
+## 1.3.4
+
+### Patch Changes
+
+- 83b072ee: Fix exports field
+
 ## 1.3.3
 
 ### Patch Changes

@@ -1,5 +1,11 @@
 # record-tuple
 
+## 1.3.3
+
+### Patch Changes
+
+- f890600e: Add exports field
+
 ## 1.3.2
 
 ### Patch Changes

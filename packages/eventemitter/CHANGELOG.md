@@ -1,5 +1,11 @@
 # configurable-eventemitter
 
+## 0.3.3
+
+### Patch Changes
+
+- c5319334: Optional Abort reason
+
 ## 0.3.2
 
 ### Patch Changes

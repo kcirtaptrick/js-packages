@@ -3,5 +3,5 @@ export class Track<T> {
 }
 
 export class Abort {
-  constructor(public reason: string) {}
+  constructor(public reason?: string) {}
 }

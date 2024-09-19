@@ -1,5 +1,11 @@
 # record-tuple
 
+## 1.3.5
+
+### Patch Changes
+
+- d71249f8: Support CommonJS, bundle with Rollup
+
 ## 1.3.4
 
 ### Patch Changes

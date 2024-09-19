@@ -1,5 +1,11 @@
 # record-tuple
 
+## 1.3.6
+
+### Patch Changes
+
+- fcf3ac9c: Fix target references
+
 ## 1.3.5
 
 ### Patch Changes

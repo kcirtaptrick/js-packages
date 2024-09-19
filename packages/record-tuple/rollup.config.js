@@ -13,7 +13,7 @@ export default defineConfig([
       }),
     ],
     output: [
-      { dir: "dist/cjs", format: "cjs" },
+      { dir: "dist/cjs", format: "cjs", entryFileNames: "[name].cjs" },
       { dir: "dist/esm", format: "esm" },
     ],
   },

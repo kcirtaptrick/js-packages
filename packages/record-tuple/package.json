@@ -5,7 +5,11 @@
   "author": "Patrick Wang <patrick.bohan.wang@gmail.com>",
   "homepage": "https://github.com/kcirtaptrick/js-packages/tree/master/packages/record-tuple#readme",
   "main": "./dist/cjs/index.cjs",
-  "exports": "./dist/index.js",
+  "exports": {
+    "import": "./dist/esm/index.js",
+    "require": "./dist/cjs/index.cjs",
+    "types": "./dist/types/index.d.ts"
+  },
   "types": "./dist/types/index.d.ts",
   "license": "MIT",
   "type": "module",

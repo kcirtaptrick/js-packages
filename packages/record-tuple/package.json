@@ -4,9 +4,9 @@
   "description": "Lightweight Record and Tuple data structures",
   "author": "Patrick Wang <patrick.bohan.wang@gmail.com>",
   "homepage": "https://github.com/kcirtaptrick/js-packages/tree/master/packages/record-tuple#readme",
-  "main": "dist/index.js",
+  "main": "./dist/cjs/index.cjs",
   "exports": "./dist/index.js",
-  "types": "dist/index.d.ts",
+  "types": "./dist/types/index.d.ts",
   "license": "MIT",
   "type": "module",
   "sideEffects": false,
@@ -21,12 +21,17 @@
     "clean": "rimraf dist && rimraf tsconfig.build.tsbuildinfo",
     "prepack": "yarn build",
     "build": "yarn clean && yarn compile",
-    "compile": "tsc --build tsconfig.build.json  && cp \"./package.json\" ./dist/",
+    "compile": "rollup -c && rm dist/types/*.js && cp \"./package.json\" ./dist/",
     "test": "uvu -r tsm src .*\\.test\\.ts",
     "lint": "eslint \"./src/**/*.tsx?\" --max-warnings=0"
   },
   "gitHead": "9cb8a448a9a7bf44e224a86c7fb6a370b87e46dc",
   "devDependencies": {
+    "@rollup/plugin-typescript": "^11.1.6",
+    "rollup": "^4.22.0",
     "typescript": "^4.9.4"
+  },
+  "dependencies": {
+    "tslib": "^2.7.0"
   }
 }

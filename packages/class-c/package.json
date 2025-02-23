@@ -17,8 +17,8 @@
   },
   "scripts": {
     "clean": "rimraf dist && rimraf tsconfig.tsbuildinfo",
-    "prepack": "yarn build",
-    "build": "yarn clean && yarn compile",
+    "prepack": "pnpm build",
+    "build": "pnpm clean && pnpm compile",
     "compile": "tsc --build && cp \"./package.json\" ./dist/",
     "test": "uvu -r tsm src .*\\.test\\.ts",
     "lint": "eslint \"./src/**/*.tsx?\" --max-warnings=0"

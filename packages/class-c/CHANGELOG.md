@@ -1,5 +1,11 @@
 # class-c
 
+## 1.0.0
+
+### Major Changes
+
+- a10058f2: Add support for options: config.transform, clone
+
 ## 0.0.10
 
 ### Patch Changes

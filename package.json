@@ -7,7 +7,7 @@
   ],
   "scripts": {
     "prepare": "./scripts/configure-references",
-    "c": "pnpm --filter class-c",
+    "class-c": "pnpm --filter class-c",
     "rt": "pnpm --filter record-tuple",
     "ee": "pnpm --filter configurable-eventemitter"
   },

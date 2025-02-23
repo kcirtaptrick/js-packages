@@ -60,6 +60,9 @@ test("Conditionals", () => {
   matches(c`${false && "a"} b`, "b");
   matches(c`a ${false && "b"} c`, "a c");
 
+  // @ts-expect-error Typescript doesn't like non-boolean constant conditions
+  matches(c`a ${undefined && "b"} ${null && "b"} ${0 && "b"} c`, "a c");
+
   matches(
     // prettier-ignore
     c`${false && "a"}`
@@ -215,6 +218,56 @@ test("Styles object: Conditional map", () => {
     c(styles)`a ${{ b: true, c: true }} d`,
     "styles.a styles.b styles.c styles.d"
   );
+});
+
+test("clone", () => {
+  const originalTransform = c.config.transform;
+  const transform1 = (str: string) => str;
+  c.config.transform = transform1;
+
+  const clone = c.clone();
+  assert.is(c.config.transform, transform1);
+  assert.is(clone.config.transform, transform1);
+
+  const transform2 = (str: string) => str;
+  clone.config.transform = transform2;
+  assert.is(c.config.transform, transform1);
+  assert.is(clone.config.transform, transform2);
+
+  const clone2 = clone.clone();
+  assert.is(c.config.transform, transform1);
+  assert.is(clone.config.transform, transform2);
+  assert.is(clone2.config.transform, transform2);
+
+  const transform3 = (str: string) => str;
+  clone2.config.transform = transform3;
+  assert.is(clone.config.transform, transform2);
+  assert.is(clone2.config.transform, transform3);
+
+  c.config.transform = originalTransform;
+});
+
+test("transform", () => {
+  const clone = c.clone();
+  clone.config.transform = (str) => {
+    const prefix = "m-";
+    let hasMargin = false;
+    return str
+      .split(" ")
+      .reverse()
+      .filter((className) => {
+        if (className.startsWith(prefix)) {
+          if (hasMargin) return false;
+          hasMargin = true;
+        }
+        return true;
+      })
+      .reverse()
+      .join(" ");
+  };
+
+  matches(clone`a m-1 b m-2`, "a b m-2");
+  matches(clone`a m-1 b m-2 m-3 m-4`, "a b m-4");
 });
 
 test.run();

@@ -1,6 +1,6 @@
 # Record & Tuple
 
-[Lightweight](https://bundlephobia.com/package/record-tuple), typed implementation of the [Records and Tuples proposal](https://github.com/tc39/proposal-record-tuple), only supports standard library. See [`@bloomberg/record-tuple-polyfill`](https://www.npmjs.com/package/@bloomberg/record-tuple-polyfill) for experimental syntax support with a babel transform.
+[Lightweight](https://bundlephobia.com/package/record-tuple), typed implementation of the [Records and Tuples proposal](https://github.com/tc39/proposal-record-tuple), only supports standard library. See [`@bloomberg/record-tuple-polyfill`](https://www.npmjs.com/package/@bloomberg/record-tuple-polyfill) for experimental syntax support with a [Babel](https://babeljs.io/) transform.
 
 ## Installation
 
@@ -35,13 +35,22 @@ map.get(Tuple(1, 2, 3)); // "value 1"
 map.get(Record({ a: "a" })); // "value 2"
 
 // Types
-const tuple: Tuple<[number, number]> = Tuple(1, 2);
-const tuple: Tuple<[number, number]> = [1, 2]; // TypeError
-const tuple: Tuple<[number, number]> = Tuple(1, 2, 3); // TypeError
+const tuple: Tuple.Type<[number, number]> = Tuple(1, 2);
+// @ts-expect-error
+const tuple: Tuple.Type<[number, number]> = [1, 2];
+// @ts-expect-error
+const tuple: Tuple.Type<[number, number]> = Tuple(1, 2, 3);
 
-const record: Record<{ a: string }> = Record({ a: "a" });
-const record: Record<{ a: string }> = { a: "a" }; // TypeError
+const record: Record.Type<{ a: string }> = Record({ a: "a" });
+// @ts-expect-error
+const record: Record.Type<{ a: string }> = { a: "a" };
+// @ts-expect-error
+const record: Record.Type<{ a: string }> = Record({ b: "b" });
 ```
+
+### Why Tuple/Record.Type?
+
+We want to avoid overriding Typescript's first-party `Record` type. We use `Tuple.Type` for consistency, but will continue to provide a `Tuple<...>` alias for convenience.
 
 ## RecordTuple
 

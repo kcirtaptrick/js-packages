@@ -9,10 +9,6 @@ if (!Symbol.isTuple) Symbol.isTuple = Symbol("isTuple");
 
 export type Tupleable = readonly any[];
 
-type Tuple<T extends Tupleable = Tupleable> = T & {
-  readonly [Symbol.isTuple]: true;
-};
-
 export const supportsWeak = typeof WeakRef !== "undefined";
 
 const finalizer =
@@ -35,7 +31,7 @@ const finalizer =
   );
 
 type Cache = Map<any, Cache> & {
-  value: null | Tuple | WeakRef<Tuple>;
+  value: null | Tuple.Type | WeakRef<Tuple.Type>;
   generation: number;
 };
 
@@ -46,13 +42,21 @@ const createCache = () =>
   }) as Cache;
 
 const cache = createCache();
-const tuples = supportsWeak ? new WeakSet<Tuple>() : new Set();
+const tuples = supportsWeak ? new WeakSet<Tuple.Type>() : new Set();
+
+type Tuple<T extends Tupleable = Tupleable> = Tuple.Type<T>;
+
+declare namespace Tuple {
+  type Type<T extends Tupleable = Tupleable> = T & {
+    readonly [Symbol.isTuple]: true;
+  };
+}
 
 function Tuple<T extends Tupleable>(...items: T) {
   return Tuple.from(items);
 }
 
-Tuple.from = <T extends Tupleable>(items: T): Tuple<T> => {
+Tuple.from = <T extends Tupleable>(items: T): Tuple.Type<T> => {
   let current = cache;
   let i = 0;
 
@@ -64,8 +68,8 @@ Tuple.from = <T extends Tupleable>(items: T): Tuple<T> => {
   }
 
   let { value } = current;
-  if (value && "deref" in value) value = value.deref() as Tuple | null;
-  if (value) return value as Tuple<T>;
+  if (value && "deref" in value) value = value.deref() as Tuple.Type | null;
+  if (value) return value as Tuple.Type<T>;
 
   const tuple = Object.freeze(
     Object.assign(items, { [Symbol.isTuple]: true as const })
@@ -83,7 +87,7 @@ Tuple.from = <T extends Tupleable>(items: T): Tuple<T> => {
   return tuple;
 };
 
-Tuple.isTuple = (maybeTuple: any): maybeTuple is Tuple =>
+Tuple.isTuple = (maybeTuple: any): maybeTuple is Tuple.Type =>
   tuples.has(maybeTuple);
 
 export default Tuple;

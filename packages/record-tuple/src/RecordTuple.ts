@@ -3,10 +3,12 @@ import Tuple, { Tupleable } from "./Tuple.js";
 
 namespace RecordTuple {
   export type Input = Recordable | Tupleable;
-  export type Result<T extends Input> = T extends any[] ? Tuple<T> : Record<T>;
+  export type Result<T extends Input> = T extends any[]
+    ? Tuple.Type<T>
+    : Record.Type<T>;
 
   export namespace deep {
-    type DeepMap<T extends Tupleable> = T extends Tuple
+    type DeepMap<T extends Tupleable> = T extends Tuple.Type
       ? T
       : T extends readonly [infer Item, ...infer Rest]
       ? [Item extends Input ? Result<Item> : Item, ...DeepMap<Rest>]
@@ -15,13 +17,13 @@ namespace RecordTuple {
       : T[number] extends Input
       ? Result<T[number]>[]
       : T;
-    type DeepRecord<T extends Recordable> = T extends Record
+    type DeepRecord<T extends Recordable> = T extends Record.Type
       ? T
-      : Record<{
+      : Record.Type<{
           [Key in keyof T]: T[Key] extends Input ? Result<T[Key]> : T[Key];
         }>;
     export type Result<T extends Input> = T extends Tupleable
-      ? Tuple<DeepMap<T>>
+      ? Tuple.Type<DeepMap<T>>
       : DeepRecord<T>;
   }
 }

@@ -1,6 +1,6 @@
 import { suite } from "uvu";
 import * as assert from "uvu/assert";
-import Record, { nonRecordError, symbolKeyError } from "./Record.js";
+import Record from "./Record.js";
 import Tuple from "./Tuple.js";
 import { setFlagsFromString } from "v8";
 import { runInNewContext } from "vm";
@@ -29,6 +29,11 @@ test("Provides structural equality with primitive values", () => {
   );
 });
 
+test("Works with own type", () => {
+  const record = Record({ a: "a", b: "b" });
+  assert.is(record, Record(record));
+});
+
 test("Record.entries", () => {
   assert.is(
     Record.entries(Record({ a: "a", b: "b" })),
@@ -40,7 +45,9 @@ test("Record.entries", () => {
     Record.entries({});
     assert.unreachable("Should have thrown");
   } catch (e) {
-    assert.is(e, nonRecordError);
+    assert.instance(e, TypeError);
+    if (!(e instanceof TypeError)) return;
+    assert.match(e.message, /non-record/);
   }
 });
 
@@ -59,14 +66,18 @@ test("Throws error with symbol key", () => {
     Record({ [Symbol()]: null });
     assert.unreachable("Should have thrown");
   } catch (e) {
-    assert.is(e, symbolKeyError);
+    assert.instance(e, TypeError);
+    if (!(e instanceof TypeError)) return;
+    assert.match(e.message, /Symbol/);
   }
   try {
     // @ts-expect-error
     Record.fromEntries([[Symbol(), null]]);
     assert.unreachable("Should have thrown");
   } catch (e) {
-    assert.is(e, symbolKeyError);
+    assert.instance(e, TypeError);
+    if (!(e instanceof TypeError)) return;
+    assert.match(e.message, /Symbol/);
   }
 });
 

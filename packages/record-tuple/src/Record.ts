@@ -24,16 +24,13 @@ const recordsByTuple = supportsWeak
   ? new WeakMap<Tuple, Record>()
   : (new Map() as never);
 
-export const symbolKeyError = new TypeError(
-  "A Symbol cannot be used as a property key in a Record."
-);
-
-export const nonRecordError = new TypeError(
-  "Record.entries received a non-record."
-);
+const symbolKeyError = "A Symbol cannot be used as a property key in a Record.";
 
 function Record<T extends Recordable>(obj: T): Record<T> {
-  if (Object.getOwnPropertySymbols(obj).length > 0) throw symbolKeyError;
+  if (Record.isRecord(obj)) return obj;
+
+  if (Object.getOwnPropertySymbols(obj).length > 0)
+    throw new TypeError(symbolKeyError);
 
   return Record.fromEntries(Object.entries(obj)) as Record<T>;
 }
@@ -50,7 +47,8 @@ type TupleEntries<T> = Tuple<
 
 Record.entries = <R extends Record>(record: R): TupleEntries<R> => {
   const tuple = tuplesByRecord.get(record);
-  if (!tuple) throw nonRecordError;
+  if (!tuple)
+    throw new TypeError("Record.entries unexpectedly received a non-record.");
   return tuple as any;
 };
 
@@ -68,7 +66,7 @@ Record.fromEntries = <Entries extends readonly [string, any][]>(
     [...entries]
       .sort(([a], [b]) => a.localeCompare(b))
       .map((entry) => {
-        if (typeof entry[0] === "symbol") throw symbolKeyError;
+        if (typeof entry[0] === "symbol") throw new TypeError(symbolKeyError);
         return Tuple.from(entry);
       })
   );

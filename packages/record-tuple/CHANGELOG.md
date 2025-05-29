@@ -1,5 +1,19 @@
 # record-tuple
 
+## 2.0.0
+
+### Major Changes
+
+- c1a301f1: Change `Record` type to `Record.Type` to avoid overriding first-party `Record`
+
+### Minor Changes
+
+- fea11bc4: Circular reference detection
+
+### Patch Changes
+
+- 664cc929: Construct errors at failure site
+
 ## 1.3.6
 
 ### Patch Changes

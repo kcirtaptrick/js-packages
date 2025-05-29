@@ -36,24 +36,40 @@ RecordTuple.deep = <T extends RecordTuple.Input>(
   input: T
 ): RecordTuple.deep.Result<T> => {
   if (!input || typeof input !== "object")
-    throw new Error(`RecordTuple.deep: Invalid input ${input}`);
+    throw new TypeError(
+      `Expected input to be an object or array, got \`${input}\``
+    );
 
-  if (Tuple.isTuple(input) || Record.isRecord(input)) return input as any;
+  const refs = new Set();
 
-  if (Array.isArray(input))
-    return Tuple.from(
-      input.map(
-        (item) =>
-          item && (typeof item === "object" ? RecordTuple.deep(item) : item)
-      )
-    ) as any;
+  return (function next(value = input): any {
+    if (refs.has(value)) throw new RecordTuple.CircularReferenceError();
+    refs.add(value);
 
-  return Record.fromEntries(
-    Object.entries(input).map(([k, v]) => [
-      k,
-      v && (typeof v === "object" ? RecordTuple.deep(v) : v),
-    ])
-  ) as any;
+    if (Tuple.isTuple(value) || Record.isRecord(value)) return value;
+
+    if (Array.isArray(value))
+      return Tuple.from(
+        value.map(
+          (item) => item && (typeof item === "object" ? next(item) : item)
+        )
+      );
+
+    return Record.fromEntries(
+      Object.entries(value).map(([k, v]) => [
+        k,
+        v && (typeof v === "object" ? next(v) : v),
+      ])
+    );
+  })();
+};
+
+RecordTuple.CircularReferenceError = class extends TypeError {
+  name = "CircularReferenceError";
+
+  constructor(message = "Unexpected circular reference encountered.") {
+    super(message);
+  }
 };
 
 export default RecordTuple;

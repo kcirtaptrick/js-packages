@@ -108,4 +108,25 @@ test(".deep: Stops at record or tuple", () => {
   );
 });
 
+test(".deep: Circular reference", () => {
+  {
+    const circular: any = {};
+    circular.self = circular;
+
+    assert.throws(
+      () => RecordTuple.deep(circular),
+      (error: Error) => error instanceof RecordTuple.CircularReferenceError
+    );
+  }
+  {
+    const circular: any = { a: { b: [{ c: [] }] } };
+    circular.a.b[0].c.push(circular);
+
+    assert.throws(
+      () => RecordTuple.deep(circular),
+      (error: Error) => error instanceof RecordTuple.CircularReferenceError
+    );
+  }
+});
+
 test.run();

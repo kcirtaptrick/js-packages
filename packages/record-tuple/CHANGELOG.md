@@ -1,5 +1,11 @@
 # record-tuple
 
+## 2.0.1
+
+### Patch Changes
+
+- 90c08fdf: Tuple.from const type argument
+
 ## 2.0.0
 
 ### Major Changes

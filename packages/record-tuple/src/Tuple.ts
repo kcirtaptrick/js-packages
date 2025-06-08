@@ -56,7 +56,7 @@ function Tuple<T extends Tupleable>(...items: T) {
   return Tuple.from(items);
 }
 
-Tuple.from = <T extends Tupleable>(items: T): Tuple.Type<T> => {
+Tuple.from = <const T extends Tupleable>(items: T): Tuple.Type<T> => {
   let current = cache;
   let i = 0;
 
